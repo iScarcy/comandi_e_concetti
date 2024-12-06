@@ -1,0 +1,178 @@
+//APPROFONDIMENTO SU RxJS
+
+//dichiarazione di un observable
+const observer = of(1,2,3,4,5,6);
+
+//sottoscrizione di un observable
+observer.subscribe(val => console.log(val));
+
+//metodo per creare un observable da un oggetto esistente
+
+ clients = [
+    {"Name":"Marco","CodId":123, "enabled":true},
+    {"Name":"Anna","CodId":456, "enabled":true},
+    {"Name":"Maria","CodId":789, "enabled":true},
+    {"Name":"Marco","CodId":101, "enabled":false},
+  ] ;
+
+from(this.clients)
+
+//OPERATORI
+disticnt = elimina i doppioni presenti un oggetto, è possibile specificare una chiave 
+
+first = recupera il primo elemento di un observable
+
+    from(this.clients)
+    .pipe(first())
+    .subscribe(console.log);
+
+last  = recupera l'ultimo elemento di un observable
+
+filter = permette di impostare un filtro per selezionare degli elmenti
+
+    from(this.clients)
+    .pipe(filter(e => e.enabled === false))
+    .subscribe(console.log);
+
+map = permette di modificare un flusso di risposta dell'observable mappando gli elementi restituiti con altri (si può fare una selezione degli altrimenti restituiti)
+
+ from(this.clients)
+    .pipe(
+      filter(e => e.enabled === false),
+      map(e => e.Name)      
+      )
+    .subscribe(console.log);
+
+timer = permette di generare un observable dopo un tot di secondi
+
+  const $firstRequest = timer(3000)
+    .pipe(
+      map( e => "prima richiesta")
+    );
+
+    const $secondRequest = timer(10000)
+    .pipe(
+      map( e => "seconda richiesta")
+    );
+
+concat = concatene due richieste, esegue prima una e poi l'altra
+
+    concat($firstRequest,$secondRequest)
+    .subscribe(message => console.log(message));   
+
+ //CREARE UN observable DA UNA NOSTRA FUNZIONE
+
+  getFramework() : Observable<string>{
+      const framework = ['angular','react','vue'];
+      return interval(2000)
+      .pipe(
+        map(index => framework[index]),
+        take(3)
+      )
+    }   
+
+      var myFramework = this.getFramework()
+    .pipe(
+      map( name => name + " è il massimo")
+    )
+    .subscribe(console.log);
+    
+    
+ //ANGULAR MATERIAL (USARE SCSS QUANDO SI CREA UN NUOVO PROGETTO)
+ 
+ -> ng add @angular/material   -> nell'app.module.ts aggiunge BrowserAnimationsModule
+ 
+ esempio di come inserire un bottone con icona
+ 
+ nell'app.module.ts inserire:
+	- import {MatButtonModule} from '@angular/material/button';
+	- import {MatIconModule} from '@angular/material/icon';
+	
+e nell'array imports inserire MatButtonModule,MatIconModule
+
+nell'html inserire
+
+<button mat-button>
+    <mat-icon>help</mat-icon>
+    Aiuto  
+ </button>
+
+
+
+*************************************** MODULI *******************************
+
+Possiamo creare moduli al fine di avere delle librerie condivise nel progetto
+
+-> ng generate module shared\material --flat, flat significa che il modulo anche se si trova in una sotto cartella verrà considerato come top level
+	
+
+
+*****************************	FLEX LAYOUT *********************************
+
+PER ABILITARLO: npm install @angular/flex-layout
+
+es html: 
+	<div class="flex-container">
+		<div class="flex-item"></div>
+	</div>
+	
+-> regole css interessanti del flex-container<-
+- display: flex
+- flex-wrap: (gli elmenti vanno a capo/cambiano in base le dimensioni dello schermo)
+- flex-direction: allineamento orizionatale (row) o verticale (coloum) degli elmenti interni al container
+- justify content: space arround (spazio intorno gli item)
+		   flex-strart (gli elmenti sono orienti sul lato sinistro perché la spaziatura è orientata sul lato destro)
+		   frex-end (elementi orientati sul lato detro)
+		   center (elementi orientati al centro)
+		   space-between (spaziatura tra gli oggetti, gli elementi iniziano e finisco all'estremita) 	
+- align-items: 	flex-star (default, elementi posizionati nella parte superiore)
+		flex-end  (elementi posizionati nella parte inferiore)
+		center (elementi posizionati al cento del contenitore)
+		stratch (gli ementi partiranno dalla parte superiore del container per arrivare gino alla  fine)
+		   
+
+->regole interessanti per gli items <-
+
+- align-self (stesse proprietà di align-items del container ma permette di specificare comportamenti sui singoli item)
+- order (permettere di dare un ordine agli elmeni diverso dal rendering dal html, di base tutti gli elmenti hanno order 0)
+- flex-grow (di tutto lo spazio che c'è, a prescindere dal cotenuto, dai maggiore priorità a quegli elmenti che hanno un flex-grow più alto. Per priorità si intente posizionamento a sinistra e dimentisioni nella riga)
+- flex-shrink (determina la velocità di un elemento nel ridursi durante la riduzione dello schermo, più alto è il valore più veloce si ridurrà l'elementi )
+- flex-basis (dimension del item, proporzionata agli altri)
+	
+
+***** ---->> PASSI PER COSTRUIRE UN LAYOUT <<---- *****
+
+0) aggiunere angular meterial: ng add @angular/material
+1) crerare la cartella layout
+2) npm install @angular/flex-layout
+3) creare il modulo per importare tutti i moduli di angular: ng generate module shared/material
+4) creare i componeti per gestire la toolbar, la sidenav e il maincontent
+5) inserire in material.module: MatIconModule, MatSidenavModule, MatToolbarModule
+6) in sidenav inserire un mat-drawer-container
+	
+******************************** ROUTES **********************************	
+
+--> ng generate module demo\demo --dry-run (per simulare la directory dove verrà creato il modulo) --routing (per gestire il routing) --flex (non crea la sottocartella)
+
+In app.module.ts inserire:
+- const routes: Route = [
+	{path:'demo', loadChildren: ()=> import('./demo/deme.module.ts').then(m => m.DemoModule)},
+	{path:'**', redirectTo:'demo'}
+]
+
+- RouterModule.forRoot(routes) in imports
+
+- In demo-routing.module.ts inserire
+
+const routes:Routes = [
+	{path: 'buttons', component: ButtonsComponent},
+	{path:'**', redirectTo: 'buttons'}
+]
+	
+
+
+
+*********************** FORM *********************************
+
+
+ 

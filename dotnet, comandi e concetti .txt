@@ -1,0 +1,39 @@
+- INIZIAMO CRERANDO LA PRIMA APPLICAZIONE
+ 
+ DA VISUAL STUDIO CREIAMO L'APP SCEGLIENDO IL TEMPLATE AspeNetCoreWebAPI
+ 
+ nel program.cs
+ -> all'avvio dell'app ho 2 cose da fare:
+	- configurare i servizi che mi serviranno durante l'app (si fa con builder.Services)
+	- costruire la catena di midleware usati durante l'applicazione (si fa con la parte app = builder.Build())
+	
+ -> appsettings.json (ne vengono creati 2, uno di sviluppo e quello finale)
+
+ -> launchSettings.json (settiggi per l'avvio dell'applicazione, ASPNETCORE_ENVIROMENT: Varibiale d'ambiente che indica suquale su quale ambiente ci troviamo durante lo sviluppo)
+ 
+ *** la dependency injection ***
+ viene implementata nel file program.cs nella parte di configurazione servizi, possiamo impostarla in tre modi diversi:
+ 
+ builder.Services.AddSingleton<Interfaccia,Classe> //Istanza unica per tutto il ciclo di vita dell'app
+ builder.Services.AddScoped<Interfaccia,Classe> //Istanza unica per tutto il ciclo di vita di una richieta http
+ builder.Services.AddTransient<Interfaccia,Classe> //Creazione Istanza ad ogni richieta
+ 
+ tutti i servizi registrati vengono gestiti dal ServiceProvider, risolverà lui la dipendenza iniettandoci i servizi che ci serviranno
+ 
+ CONTROLLER
+ 
+ -->NUOVO CONTROLLER: In visual studio, posizionarsi nella cartella "Controller" e aggiungere un nuovo controller, selezionare Comune API -> Controller API - Vuoto e verificare che la classe estenda il ControllerBase <--
+ 
+ i metodi dei controller si chiamano Action
+ le action sono metodi che deveno avere un verbo http (get, post, put, delete, ...) 
+ possono avere un ritorno di un qualsiasi tipo, possono essere asincrono o il loro ritorno può essere un ActionResult
+ -> ActionResult è un wrapper che ci aiuta a dare informazioni sulla risposta http: i ritorni si fanno cosi: return Ok(ret);
+ 
+ MODELLI
+ Tutti i modelli che si espongono dovrebbero essere in una cartella chiamata Models
+ 
+ VALIDAZIONI
+ - Statiche:  quelle validazioni che si possono effettuare senza nessuna risorsa esterna (es: codice fiscale)
+ - Dinamiche: quelle validazioni che si possono effettuare tramite risorse esterne (es: ci passano un id, verifichiamo su un db esiste un elemento con quell'id)
+ 
+ Validazione statiche trami DataNotation

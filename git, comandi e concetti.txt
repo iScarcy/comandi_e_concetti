@@ -1,0 +1,46 @@
+*** GIT, COMANDI E CONCETTI ***
+
+GIT FLOW: feature => Develop => Release => Production
+
+-->git config --global --list ELENCA LE ATTUALI IMPOSTAZIONI GLOBALI
+
+-->git init -b nome-progetto INIZIALIZZA LA CARTELLA DOVE SI TROVA O SI TROVERA' IL PROGETTO
+
+-->git status PER CONOSCERE LO STATO DELLA WORKING AREA e DELLA STAGING
+
+-->git commit SALVA/COMMITTA LE MODIFICHE DELLA STAGIN AREA
+
+-->git restore . REVERTA LA WORKING AREA A CIO' CHE C'è NELLA STAGING 
+
+--> git config --local alias.history "log --all --graph --decorate --oneline" ESEMPIO DI COME CREARE UN ALIAS IN LOCALE PER SINTETIZZARE DEI COMANDI
+
+-->git diff POSSIAMO VEDERE LE DIFFERENZE DI UN FILE TRA LA WORKING AREA E LA STAGING, nel momento in cui facciamo anche solo ADD non vediamo più tali differenze
+
+-->git rm --cached myfile.txt RIMUOVE IL FILE DAL TRACCIAMENTO DI GIT E LO NASCONDE
+
+*** CRERAZIONE BRANCH ***
+
+Queste tre istruzioni hanno lo stesso effetto, creare un branch 
+
+git branch Develop
+git checkout -b Release
+git switch -c Test 
+
+con queste istruzioni invece ci spostiamo da un branch all'altro
+git checkout Release
+git switch Test 
+
+-->git branch -m new name RINOMINA IL BRANCH
+
+-->git branch -d branch-to-delete ELIMINA IL BRANCH INDICATO
+
+*** GIT MERGE ***
+
+--> git merge NOME-BRANCH-CON-MODIFICHE-CHE-VOGLIO-PORTARE-NEL-BRANCH-CORRENTE 
+(con questo comando ho l'effetto che il branch attuale punterà il commit del branch che ho mergiato)
+
+*** ********* ***
+
+--> git reflog: MOSTRA I LOG CON GLI ID DI RIFERIMENTO
+
+--> git cherry-pick ID: aggiunge in un branch le modifiche fatte al commit con ID specificato

@@ -1,0 +1,179 @@
+- cercare immagini:
+docker search ubuntu
+
+- scaricare immagini
+docker image pull ubuntu
+
+-eseguire immagini
+docker run ubuntu
+
+-vedere le immagini scaricate
+docker image ls
+
+-eliminare un immagine
+docker rmi ubuntu
+
+- ripercorre un docker file per vedere come è stata costruita un'immagine
+docker history ubuntu 
+
+-ispezionare file manifesti per avere info sulle versione della stessa immagini
+docker manifest inspect ubuntu 
+
+- avviare un immagine (creare un container)
+docker run ubuntu
+
+-- esegue l'immagine di ubuntu a cui passa il comando "bash" e tramite il comando "it" interative terminal, 
+   aggancia il terminale del container al terminale in esecuzione
+docker run -it ubuntu bash
+
+-- crea un container dandogli il nome prova-ubuntu
+docker run -it --name prova-ubuntu ubuntu bash
+
+--> da un container in esecuzione con -it, 
+	possiamo digitare CTRL + D per uscire e terminare il container
+	possiamo scrivere EXIT per uscire e terminare il container
+	possiamo digitare CTRL + P, CTRL Q per uscire dal terminale senza termianre il contaier il container -->
+	--> --> --> posso digitare docker attach id_del_container / nome_container per ricollegarmi al contaier desiderato
+	
+	
+--> DOPO CHE FERMIAMO UN CONTAIER, PER FARLO RIPARTIRE DOBBIAMO USARE IL COMANDO:
+docker start prova-ubuntu	
+
+--> PER ELIMINARE UN CONTAINER DOBBIAMO DIGIRARE:
+docker rm prova-ubuntu
+
+Crea un container con il nome prova-ubuntu che verrà terminato automaticamente quando si esce dal container
+docker run -it -rm --name prova-ubuntu ubuntu bash
+
+--> Lista dei container
+docker ps (-all)
+
+--> fermare un container già avviato
+docker stop prova-ubuntu 
+
+--> per vedere se cosa succedere dentro il contaier senza collegarsi dentro 
+docker prova-ubuntu logs
+
+--> per terminare forzatamente un container
+docker kill prova-ubuntu 
+
+--> rimuovere (eliminare) tutti i container fermati
+docker container prune
+
+
+*************** VOLUMI E NETWORKING *********************
+
+--> avviamo un container di nginx in cui diciamo tramite il flag -p di mappare la porta 8080 dell'host locale sulla porta 80 del container
+docker run -p 8080:80 nginx
+
+--> tramite il flag -v è possibile indicare ad un container una direcory del nostro file systema da mappare all'interno del container.
+	ES: docker run -p 8080:80 -v /home/peppe/app/angular/rubrica:/user/share/nginx/html/rubrica nginx
+	
+************** DOCKER COMPOSE ***************
+
+creare il file docker_compose.yml con questa sintassi
+
+services:
+  php:
+	image: 'php:8.1-fpm'
+	container-name: php-scarcy
+	volumes:
+	  - './app:/var/www/html'
+  nginx:
+    image: 'nginx:latest'
+	container_name: 'nginx_scarcy' (equivalmente del tag --name)
+	ports: (equivalmente del tag -p)
+	  - '8081:80' 
+	  - '8443:443'
+	volumes: (equivalmente del tag -v)
+	  - './app:/var/www/html'
+	  - './config/nginx:/etc/nginx/conf.d'
+	depends_on:
+	  - php
+		
+		
+--> per eseguire un file docker compose dobbiamo usare il comando:
+docker compose up
+
+--> se digitassimo: "docker compose up -d" non il terminale non resta agganciato perché "-d" significa "deattached"
+
+--> per interrompere un docker compose in esecuzione si dovrebbe digitare:
+docker compose down
+
+altro esempio di docker file:
+
+services:
+    php:
+        image: 'morrolinux/myphp'
+        container_name: ${APP_NAME:?err}-php
+        volumes:
+            - './app:/var/www/html'
+
+    nginx:
+        image: 'nginx:latest'
+        container_name: ${APP_NAME:?err}-nginx
+        ports:
+            - '8081:80'
+            - '8443:443'
+        volumes:
+            - './app:/var/www/html'
+            - './config/nginx:/etc/nginx/conf.d'
+
+    mariadb:
+        image: 'mariadb:latest'
+        container_name: ${APP_NAME:?err}-mariadb
+        restart: 'on-failure'
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?err}
+			
+
+questo docker file fa uso di un file di configurazione (una specie di app.config) 
+dove insere le variaibili usate tra parentesi graffe			
+questi file sono i file .env (attenzione su linux i file che iniziano col punto sono nascosti)
+es:
+	APP_NAME=myapp
+	MYSQL_ROOT_PASSWORD=rootpass
+
+
+nel secondo esempio di file docker compose abbiamo 2 elementi che non c'èerano nel primo esempio:
+	- enviroment :  sono le varibili d'ambiente che possiamo scrivere all'interno del file .env 
+					e passarle ad un container che ne fa uso (bisogna leggere la documentazione del container)
+	- restart: 	politica di restart del container in caso di stop anomali del demone di docker o di stop del container.
+				i possibili valori sono:
+					- no: il container non riparte automaticamente in caso di stop anomali (default)
+					- on-failure[max-retries]: se il container va in errore per x motivi, vengono fatti max-retries numero di tentati di riavvio
+					- always: riavvia sempre
+					- unless-stopped: mantiene l'ultimo stato
+					
+					
+**** BIND MOUNTS Vs VOLUMI ****
+Fino a questo momento abbimamo usanto dei bind mounts per passare informazioni al container. 
+I dati restano salvati nel container, quando il container si elimina i dati si perdono. Per superare questo limite su usano i VOLUMI.
+
+Bind mounts: quando vogliamo uno scampio biredizionale tra una cartella definita sull'host e una definita sul container
+Volumi: quando vogliamo mantenere i dati persistenti all'interno di un container e possibilmente condividerli anche con altri container
+					
+
+
+*************** VOLUMI *****************
+
+-> I Volumi sono delle entitià separate dai container, possiamo dichiare volumi anche sganciati da un container
+docker volume create
+
+-> Possiamo anche assegnare un nome al volume che creiamo
+docker volume crerate mio_volume
+
+-> Per elencare tutti i volumi
+docker volume ls
+
+->eliminerà tutti i volumi non associati almeno ad un container
+docker volume prune
+
+->per avere informazioni sul volume
+docker volume inspect (hash del volume o nome)
+
+/* NELLE informazioni del Volume non troveremo chi usa quel volume,
+dobbiamo fare: docker inspect (hash o nome del contaier) e controllare la proprietà "Mounts" 
+per vedere se troviamo il volume desiderato
+
+*/

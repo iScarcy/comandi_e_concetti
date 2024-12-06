@@ -1,0 +1,440 @@
+CREARE NUOVO PROGETTO ANGULAR
+ng new nome-del-progetto
+
+trainspaler JIT (just in time, per lo sviluppo)
+trainsplart AOT (per la produzione)
+
+struttura progetto
+	SRC (Contiene i file di sviluppo)
+	
+	providers = servizi che possiamo iniettare 
+	declaretios = quali sono i componenti, le direttive e pipe che fanno parte della nostra 		
+		      app
+	imports     = moduli da importare
+	bootstrap = prende uno o più componenti da mostrare in prima battuta
+	
+traisplare (COMPILARE) IL PROGETTO
+ng serve	
+
+app.module.ts
+
+INTERPOLAZIONE è uno dei 4 tipi di binding di angular e consiste nel legame di una variabile con il template. Nel caso in cui mostro a schermo una variabile con questa sintassi {{pippo}}, se pippo cambia vedo il cambiamento istantaneamente su schermo senza fare nulla
+
+EVENT BINDING secondo tipo di binding, è di tipo unidirezionale. Si tratta di quelli eventi che si scatano quando l'utente fa qualcosa (ascoltatore)
+
+*********************************************** EVENT EMIT *************************
+
+possiamo creare degli event emitter per propagare eventi personalizzati. 
+Si inseriscono dentro i componenti figli mentre nei componenti padre, bisogno mettere gli ascoltatori di tali eventi
+
+COMPONENI
+per creareli: NG GENERATE COMPONENT
+
+esempio
+
+COMPONENTI FIGLIO, dichiaro:
+
+@Output() public limitReached: EventEmitter<void> = new EventEmitter();
+
+e poi dentro unA funzione (o da altre parti) si crea una condizione che, se verificata, si propagherà l'evento -> 
+
+	-> if(this.num_visit > 10  ){
+	       this.limitReached.emit();
+	   }
+@Output() si deve mettere per far arrivare l'evento dal compoponente figlio al componente padre, ovvero quello del livello gerarchico superiore	   
+
+COMPONENTE PADRE, dichiaro nell'html:
+
+nell'html si mette
+<app-counter (tipoDiEventoDaAscoltare) = "funzioneComponentePadreDaRichiamare()"></app-counter>
+es:
+<app-counter (limitReached) = "limitLimitReached()"></app-counter>
+
+
+nel file .ts dichiaro la funzione limitLimitReached
+
+
+Agli event emitter possiamo anche passare un payload in modo da catturare delle informazioni 
+quando accadono degli eventi e questo lo si fa usando delle interfaccie come tipi da dati
+
+es: 
+
+export interface ILimitReached{
+    value:number;
+    isNegaive:boolean;
+}
+
+@Output() public limitReached: EventEmitter<ILimitReached> = new EventEmitter();
+
+    if(this.num_visit > 10 || this.num_visit < -10  ){
+       this.limitReached.emit({
+         value: this.num_visit,
+         isNegaive: this.num_visit < 0
+       });
+    }
+    
+ <app-counter (limitReached) = "limitLimitReached($event)"></app-counter>
+ public limitLimitReached(p:ILimitReached):void
+  {
+    console.log(p);
+  }   
+  
+---> metodo per eleminare dimicamento un elemento da un array tramite l'id <--- 
+public listenerDeleteEvent(contatto: Persona){
+let index = this.contatti.findIndex(d => d.id === contatto.id); //find index in your array
+this.contatti.splice(index, 1);//remove element from array
+} 
+    
+STATELESS COMPONENT (Componenti privi di stato). 
+
+PROPERTY BINDING, la utilizziamo per passare dei dati dal padre al figlio. 
+Nell'esempio del contatore, vogliamo instanziare più volte lo stesso oggetto contatore ma facendolo iniziare da valori diversi. 
+Per fare ciò si usa il decorator @Input e questa sinstassi
+
+@@@@@@@@ <app-counter [proprietaDelFiglio] = "valoreCheIlPadreGliPassa"></app-counter> @@@@@@@@@@
+
+
+--> REGOLA D'ORO <--
+nei tag html di inclusione di un compente figlio dentro l'html del padre, sulla sinistra avremo sempre un riferimento al figlio e a destra un qualcosa che riguarda il padre.
+
+Questa regola d'oro vale sia con l'event buinding che con il propert buinding, es:
+<app-counter (limitReached) = "limitLimitReached()" [contatore] = "1"></app-counter>
+
+REGOLA JAVASCRIPT
+
+const counters = [5,0,7]
+
+for(const c in counters) {
+}
+
+TRADUZIONE IN ANGULAR
+
+aggiungere, come attributo, di elemento html una sintassi come questa 
+che fa la stessa cosa del ciclo for :
+
+<app-counter *ngFor="let c of counters" (limitReached) = "limitLimitReached()" [contatore] = "c"></app-counter>
+
+***********************************************************************************
+Una diritiva è una clsse con decoration ma senza template
+
+DIRETTIVE STRUTTURALI (CAMBIANO GLI ELEMENTI DEL DOM)
+*ngFor
+*ngfIf
+
+DIRETTIVE ATTRIBUTO
+per crearele: NG GENERATE DIRECTIVE cartella-direttive/nome-direttiva (es: directive/highlight)
+si può usare per ascolare event. ---> HostListener <-----
+
+SERVIZI E OSSERVABLE
+i servizi sono il cuore della business login dei progessi angular in quanto CONTENGONO LA BUSINESS LOGIC 
+tramite essi è possibile (per esempio) fare delle chiamate rest ad un backend per recuperare i dati 
+
+definiamo un osservable in questo modo nel servizio 
+
+  public users(): Observable<User[]>
+  {
+    var uri:string = "https://jsonplaceholder.typicode.com/users";
+    return this._http.get<Array<IUser>>(uri).pipe(
+        map( users =>
+          {  
+           return users.map(user => new User(user.id, user.name, user.username, user.email))   
+          })
+    );
+
+  }
+  
+  e poi registriamo un ascoltatore in un altro oggetto, in quello che vuole sfruttare i dati del backend:
+  
+  public ngOnInit(): void {
+     this.handleUsers();
+  }
+  
+   public handleUsers()
+  {
+    //subscribe: registro l'osservable
+    this._userService.users().subscribe(users =>{
+      this.users = users;
+    
+    });
+  }
+  
+  dentro handleUsers abbiamo usato subscribe per registare la callback della chiamata rest dell'osservable
+ 
+-->per crerare dei servizi che facciano delle chiamate rest bisogna importare (crerdo manualmente) il modulo HttpClient
+	
+	questo va inserito nel servizio che stiamo creando: import { HttpClient } from '@angular/common/http';
+	questo va inserito in app.module.ts: import { HttpClientModule } from '@angular/common/http';
+	questo va inserito nell'array imports di app.module.ts: HttpClientModule
+ 
+  ----- funzioni JAVASCRIPT, esistono 3 modi per dichiaral ----
+  
+	1. FUNCTION DECLARACTION
+	 function fn() {
+	 
+	 }
+	 
+	2. FUNCTION EXPRESSION
+	
+	const fc = function() {
+	
+	}
+	
+	3 . ARROW FUNCTION
+	
+	() => {
+	
+	}
+	
+	Esempi:
+	
+	function sum(a,b) {
+		return a +  b;
+	}
+	
+//quando l'istruzione è su una riga, 
+//se omettiamo le parentesi graffe, il return è implicito
+const sumArrow = (a,b) => a + b; 
+						
+//se in una arrow function, c'è un solo parametro in input è possibile eliminare le parentesi tonde
+const perDue = a => a * 2;
+
+//nel in cui non ci fossero paremetri dobbiamo inserire le parentesi tonde 
+const fn = () => {}
+
+
+******************* FORM ***********************
+
+TEMPLATE DRIVER FORM, si caratterizzano per avere le regole di validazione nell'html del template e non dentro il codice.
+
+TWO WAY DATA BINDING, si realizza con una direttiva particolare specifica per i form.
+
+E' necessario carica un modulo. In app.module.ts, inserire in "imports" FormsModule -
+
+<form (ngSubmit)="handleLogin()">
+    <label>email:</label>
+    <input name="email" type="email" [(ngModel)]="email" >
+    <label>password:</label>
+    <input name="password" type="password" [(ngModel)]="password" >
+    <button>Accedi</button>
+</form>
+
+REGOLE: 
+
+[(ngModel)]="email" con questa sintassi leghiamo un attributo html ad una proprietà del componente, Dal codice leggiamo il valore che l'utente inserise dal html. Il valore della proprietà in questione può essere modificato sul codice, da qualsiasi metodo, e può essere modificato anche dall'utente sull'html quando modifica il calore del campo. QUESTA DOPPIA POSSIBILITA' DI MODIFICA E' QUELLO CHE DI DA' IL TWO WAY DATA BINDING
+
+(ngSubmit)="handleLogin()" al submit del form viene invocato il metodo indicato, in questo caso "handleLogin"
+
+	
+VALIDAZIONE DEI FORM 
+
+Con i template driver form, la validazione avviene sul html del template e non nel componente. E' sufficiente mettere delle validazioni html5 sui campi (required, email, password, maxlenght, minlenght, etc.)
+la validazione del form parte nel momento il cui, si passa al componente un istanza del form (dove avviene la validazione)
+es: <form (ngSubmit)="handleLogin(f)" #f="ngForm"> nel form dichiaro una variabile f che contiene l'instanza del form rappresentata dall'ogetto ngForm 
+	dopo di che passo tale instanza al metodo handleLogin che dovrà avere questa firma  "public handleLogin(f:NgForm)"
+	
+GESTIONE MESSAGGI D'ERRORE
+
+per gestire i messaggi d'errore di validazione sui campi usiamo : REFERENCE TEMPLATE VARIABLE
+
+ovvero:  <input name="email" type="email" [(ngModel)]="email" #e="ngModel" required email>
+-> ngModel viene usato sia per il two way buinding ma anche come puntatore all'oggetto che angular ha creato per quel campo, questo avviene tramite l'istruzione #e="mgModel" dove "#e" è il nome di una variabile
+
+
+Questo è un esempio di campo input html validato seguito la gestione dei possibili errori di validazione dello stesso campo
+
+<input name="email" type="email" [(ngModel)]="email" #e="ngModel" required email>
+<div *ngIf="e.touched && e.invalid">
+	 <p *ngIf="e.hasError('required')">Campo obbligatorio</p>   
+	 <p *ngIf="e.hasError('email')">Email non valida</p>   
+</div>
+
+mettiamo *ngIf="e.touched && e.invalid" per mostrare gli errori solo se l'utente è entrato nel campo e se il form è invalido
+con la proprietà e.hasError chiediamo al nostro puntatore all'oggetto html se si è verificato un determinato errore, è sufficiente mettere tra parentesi la proprietà html che si vuole controllare. Ovviamente deve essere una proprietà che è stat inserita nell'html sul campo interessato. 
+
+
+********************** LIFE CYCKE HOOKS, ovvero CICLO DI VITA DEI COMPONENTI ****************
+
+-> ngOnChanges <-
+
+viene scatenato più volte durante la creazione delle pagine, può scatenarsi anche durante l'interazione dell'utente.
+Si scatena ogni qualvolta c'è un cambiamento di stato di un componente, i cambiamenti per ANGULAR i cambiamenti delle proprietà decorate con INPUT
+Nella fase di elaborazione del costruttore, ANGULAR scatena ngOnChanges (prima di arrivare all'ngOnInit) tante volte quanto sono le proprietà in input
+
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if('user' in changes)
+    {
+      // se questa condizione è vera significa che "user" è la proprietà che ha subito la modifica
+      //changes.user.currentValue = valore attuale, quello che possiamo vedere a seguito della modifica
+      //changes.user.previousValue = valore prima della modifica
+      //changes.user.firstChange, ci dice se  la prima volta che il valore del componente è cambiato
+    }
+  }
+  
+-> ngOnInit <-
+viene eseguiot al termine dell'alavorazione di tutte le direttive (comprese proprietà in input e output)
+di uno specifico selettore. In questo memento, tutte le proprietà decorate con @Input sono valorizzate e accessibili
+Posto ideale per eseguire chiamate ad interfaccie esterne
+
+-> ngDoCheck <-
+permette di eseguire controlli al termine del digest cycle di ANGULAR
+SPIEGAZIONE: quando avviene un cambiamento, si scatena ngOnChanges e subito dopo angular fa un serie di controlli su tutta la sua alberatura
+			 per verificare che quel cambiamento che è stato fatto sia gestito nell'intera struttura dell'applicazione; questo è il DIGEST CYCLE.
+			 Dopo tutti questi controlli, se l'utente volesse fare ulterirori controlli e/o azioni angular richiama ngDoCheck
+			 
+
+
+
+*****************************************************************************************
+************************************	ROUTING 	*****  ********************************
+*****************************************************************************************
+
+Dentro il modulo AppRoutingModule, si deve configurare il routing. 
+Nell'array const routes: Routes = []; devo inserire per ciascun componente, di nostro interesse, un percorso di navigazione.
+ES: 
+	const routes: Routes = [{
+		  component: UsersListComponent,
+		  path: 'users'
+		},{
+		  component: LoginComponent,
+		  path: 'login'
+		},{
+		  component: HomeComponent,
+		  path: '',
+		  pathMatch: 'full'
+		}];
+
+in component mettiamo il componente da mostrare e il path il percorso "virtuale" che si riferisce a quel componente.
+Tale percorso virtuale, viene puntato dai routerLink nei tag a nell'html
+
+
+<nav>
+  <a routerLink="/">Home</a> |
+  <a routerLink="/users">Users</a> |
+  <a routerLink="/login">Login</a> |
+</nav>
+<router-outlet></router-outlet>
+
+
+********* LETTURA DINAMICA DEI PARAMETRI DELLA ROUTE **********
+
+Immaginiamo di avere un elenco di utente e vogliamo leggere i dati solo di uno di questi,
+dobbiamo realizzare una route con un parametro e un nuovo componente (se vogliamo) dove far vedere i dati di solo quell'utente
+
+Questa è la nuova configurazione della route, il componente UsersComponent è caricato sul path users/:id, con i due punti indichiamo che stiamo creando un paramentro e dopo inseriamo il nome del paramentro.
+
+	const routes: Routes = [{
+	  component: UsersComponent,
+	  path: 'users/:id'
+	},{
+	  component: UsersListComponent,
+	  path: 'users'
+	},{
+	  component: LoginComponent,
+	  path: 'login'
+	},{
+	  component: HomeComponent,
+	  path: '',
+	  pathMatch: 'full'
+	}];
+	
+--> Nel costruttore del nuovo componente dobbiamo mettere la variabile dell'interfaccia ActivatedRoute, 
+	questo ci permetterà di accedere ai parametri della route dentro ngOnInit del componente 
+	
+	la lettura del parametro dovrebbe avvenire tramite un observable ma dovremo due observable annidati, 
+	l'inserfaccia ActivatedRoute ci permette di usare un'istantanea, uno snapshot, e di leggere direttamente da li i paramentri
+	
+	const idUser = Number(this._route.snapshot.paramMap.get('id'));
+      
+	dopo di che dichiarimo che ci mettiamo in ascolto di un observable che fa la chiamata http verso il nostro web method per la lettura del singolo utente  
+	this._userSubscription = this._userService.user(idUser).subscribe(user => {this.user = user});
+	
+	Qui invece vediamo come si usa un routerLink come parametro attributo e componiamo il percorso con una variabile 
+	<a [routerLink]="['/users',user.id]" >{{user.id}}</a>
+	
+	FUNZIONE UTILE PER VEDERE SE UN ID NON è VUOTO E SE CONTIENE UN NUMERO
+	if(!isNaN(Number(this._route.snapshot.paramMap.get('id')))){
+      const idUser = Number(this._route.snapshot.paramMap.get('id'));
+      this._userSubscription = this._userService.user(idUser).subscribe(user => {this.user = user});
+   } 
+	
+************************************************************************************************************
+
+*** GUARD, proteggiamo le aree della nostra applicazione ***	
+
+---> ng generate guard guards/is-logged
+
+CanActivate: ci permette di definire se un utente può accedere ad una zona
+
+per attivare una guard è necessario configurarle nel routing 
+
+ESEMPIO DA RIVEDERE 
+
+	@Injectable()
+		class UserToken {
+	}
+
+	@Injectable()
+	class PermissionsService {
+		  canActivate(currentUser: UserToken, userId: string): boolean {
+			return true;
+		  }
+		  canMatch(currentUser: UserToken): boolean {
+			return true;
+		  }
+	}
+
+	const canActivateTeam: CanActivateFn =
+		(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+		  return inject(PermissionsService).canActivate(inject(UserToken), route.params.id);
+		};
+		
+		
+	bootstrapApplication(App, {
+	  providers: [provideRouter([
+		{
+		  path: 'team/:id',
+		  component: TeamComponent,
+		  canActivate: [canActivateTeam],
+		},
+	  ])]
+	});	
+	
+	
+******************************************************************************************************
+
+ -> angular.js
+
+  sourceMap = mappattura del condice scritto da noi (typeScrit) in quello generato dal trainspaler (javascript)
+  
+  in style e scripts inseriamo rispettivamente css e js aggiuntivi (es: bootstrap)
+  
+  per installare jquery: npm install --save jquery
+  
+  
+  
+  --->PER FARE UNA BUILD PER PROD: ng build <---
+  
+  
+  
+**************************************** LOGGER *************************************************
+
+L'idea è creare un servizio di gestione degli errori che quando si verifica un errore lato client, 
+faccia una chiamata rest al server inviando l'errore
+ 
+ 
+ export class LoggerService extends ErrorHandler{
+
+  constructor(private _http: HttpClient) { 
+    super();
+    console.log("LOGGERRR !!!!")
+  }
+
+  public override handleError(error: any): void {
+    //mando l'errore client sull'app sul server
+    this._http.post("indirizzo-server-app",{
+      error
+    })
+    super.handleError(error);
+  }
+}

@@ -1,0 +1,197 @@
+************************ NgRx *****************************
+
+IMPLEMENTAZINOE ANGULAR DELLA LIBRERIA REDUX PER LA GESTIONE DEGLI STATI DI UN'APPLICAZIONE
+
+COS'è E PRECHé NE ABBIAMO BISOGNO ? 
+-> in un applicazione che non implementa la gestione degli stati, ogni dato che il frontend deve mostrare in pagina va recuperato tramite il backend e quando c'è un aggiornamento 
+	ogni sezione della pagina coinvolta con quell'aggiornamento deve essere aggiornata. 
+->	La gestione degli stati, consiste nella gestione di una specie di database in memoria del frontend che si sincronizza con il backend in backgroud senza disturbare le azioni del frontend migliorandone le prestazioni.
+	Uno degli obiettivi è ridurre le chiamate http ripetute tra frontend e backend
+	
+	
+---> ng add @ngrx/store <---
+in app.modules.ts aggiunge  StoreModule.forRoot({reducers}, {metaReducers}) 	
+
+fatto questo dobbiamo lanciare anche questo comando:
+
+--> ng add @ngrx/store-devtools <--
+in app.modules.ts aggiunge  StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
+maxAge è la quantità massima di shapshot memorizzabile nella gestione degli stati
+
+per configurare un modulo ad usare la gestione degli stati, digitiamo:
+
+-->ng generate store auth/Auth --module auth.module.ts (questo è un esempio sul modulo auth.module.ts che si trova nella cartella auth/Auth)
+tale comando aggiorna il modulo indicato e crea un nuovo file nela cartella reducers/index.ts
+
+dopo di che nel componente in cui vogliamo usare la gestione degli stati, 
+dobbiamo passare nel costruttore il servizio dello store  "private store: Store<State>"
+
+se per esempio dobbiamo salvare un dato nello store possiamo usare l'API dispatch
+
+un'Action è un oggetto javascript che inviamo allo store di ngrx per scatenare una modifica
+
+this.store.dispatch({
+	type:'Login Action',
+	payload: {}
+});
+
+---> payload rappresenta i dati necessario in ordine per creare una shapshot degli stati interni
+
+ALTRA SOLUZIONE, al dispatch passiamo una FUNZIONE
+
+creiamo un nuovo file che conterrà tutte le nostre azioni su un tema, esempio: auth.actions.ts 
+
+prima funzione esempio
+export const login = createAction(
+    "[Login Page] User Login", //qui mettiamo un log -> [Pagina in cui l'azione è invocata], cosa fa l'azione 
+    props<{user:User}>()
+);
+
+invochiamo questa funziona da un componente in questo modo:   this.store.dispatch(login({user}));
+
+
+******** REDUCES ****
+
+WE ARE ALSO GOING TO, IN THIS LESSON, DEFINE A WAY OF GROUPING MULTILE RELATED Action TOGETHER
+
+new file action-types,ts
+
+import * as AuthActions from './auth.actions';
+
+export {AuthActions};
+
+---> Definizione: Un reducers è una funzione che non modifica lo stato direttamente
+				  ma dando uno stato in input e un azione, calcola una nuova versione dello stato e la in output
+				  
+				  
+
+esempio di crerazione di un reducer
+				  
+export interface AuthState {
+    user: User
+}
+
+export const initialAuthState: AuthState = {
+    user: undefined
+}
+ 
+
+export const authReducer = createReducer (
+    // valore iniziale
+	initialAuthState, 
+    //azione che si scatena al verificarsi della login 
+	on(AuthActions.login, (state, action) => {return {
+        user: action.user
+    }})
+)	  
+
+
+
+
+
+******** 	STORE   	********
+******** 	ACTIONS 	********
+******** 	REDUCES 	********
+******** 	SELECTORS 	********
+******** 	EFFECTS 	********
+
+Diagramma:
+
+Component -> Action -> Reducer -> Store -> Selector -> Component (Again)
+				|	
+				|
+				Effects
+
+Un componente può avedere delle azioni che lanciano dei reducer per aggiornare lo store e lo stati. 
+I Selector sono semplicemente dei subscriber tramite cui leggere i dati dello store.
+Gli effect hanno un ruolo importante perché sono loro che si occupano di interaggire con i servizi http e passare i dati alle action
+
+
+Actions describe unique events that are dispatched from components and services -> Le actions descrivono eventi unici inviati da componenti e servizi
+State changes are handled by pure functions called reducers that take the current state and the latest action to compute a new state. -> I reducers sono funzioni che prendono lo stato attuale e l'ultima azione invocata e calcolano un nuovo stato 
+Selectors sono funzioni usate per selezionare, derivare e comporre porzioni dello state
+Lo state è accessibile tramite lo store, un observable dello state e degli obsevable delle azioni
+
+*****
+passi nuova app (secondo tizio youtube)
+*****
+
+1. ng new nomeprogetto
+2. ng add @ngrx/store
+3. ng generate shared/service
+4. creare shared/store questi file:
+	- .actions.ts <- qui inseriamo le possibili azioni (una sorta di interfaccia)
+	- .reducer.ts <- qui definifiamo cosa devono le azioni e le agganciamo ad un evento (on ....)
+	- .state.ts   <- qui definiamo la struttura dati dello state (initialState)
+	
+5. crerare componenti (esempio compo-bottone, compo-display)
+6. registrare nel modulo app.module.ts 
+	StoreModule.forRoot({counter:counterReduer}) -> nome + reducer 
+	
+7. creare nel componente bottone delle funzioni dove fare il dispatch delle actions nello store. 	
+
+	
+	
+
+******** EFFECTS ********
+
+
+
+********** NgRx DATA **********
+
+serve per scrivere meno codice
+
+- definisco le entità, in modulo che si riferisce al progetto (es: saints.module.ts)  creando un oggetto che estente EntityMetadataMap
+
+const entityMetaData : EntityMetadataMap = {
+  Saints:{
+    
+  }
+}
+
+- registro l'entity store: aggiunto EntityDataModule.forRoot in app.module
+
+- inizio a creare e registrare un serie di file/servizi
+
+	1) entity data service: gestisce la crezione, il recupero, l'aggiornamento e la cancellazione dei dati sul server estendendo la classe EntityCollectionServiceBase<T>
+	
+	export class SaintEntityService extends EntityCollectionServiceBase<Saint>{
+
+		constructor(serviceElementFactory: EntityCollectionServiceElementsFactory){
+			super("Saint", serviceElementFactory)
+		}
+
+	}
+	
+	2) saints.resolver.ts ( questo dovrebbe fare da ..................... )
+	
+	export class SaintResolver implements Resolve<boolean>{
+		constructor(private saintsService: SaintEntityService){
+
+		}
+
+		resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean>  {
+			
+			return this.saintsService.getAll()
+				.pipe(
+					map(saints => !!saints)
+				)
+
+		}
+	}
+	
+	3) saints-data.service.ts (qui bisogna settere l'url dove ci saranno le chiamate rest, se impostiamo bene le convenzioni tale chiamate verranno implementate automaticamnte)
+		
+		export class SaintsDataService extends DefaultDataService<Saint> {
+		constructor(http:HttpClient, httpUrlGenerator: HttpUrlGenerator){
+			super("Saint", http, httpUrlGenerator)
+		}
+
+		 override getAll(options?: HttpOptions): Observable<Saint[]> {
+			 
+			return this.http.get<Saint[]>(baseApiUrlSaints)
+				.pipe(
+					map(res => res)
+				)
+		 }
+	}
