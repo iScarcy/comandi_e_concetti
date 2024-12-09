@@ -1,0 +1,42 @@
+
+AVVIARE UN APPLICAZIONE
+-> dotnet run
+
+COMPLIARE UN APPLICAZIONE
+-> dotnet build
+
+CREARE UN NUOVO PROGETTO APP WEB
+-> dotnet new webapp -f net6.0
+
+CREARE UNA PAGINA 
+-> dotnet new page --name Pizza --namespace RazorPagesPizza.Pages --output Pages
+
+CREARE UN NUOVO PROGETTO API WEB CON CONTROLLER
+-> dotnet new web -f net6.0
+
+CREARE UN NUOVO PROGETTO API WEB SENZA CONTROLLER
+-> dotnet new webapi -f net6.0
+
+CRERARE UNA CONSOLE APP
+-> dotnet new console --framework net6.0 --use-program-main
+
+CONNETTERSI AD UN API WEB
+->httprepl https://localhost:{PORT}
+
+CRERARE UN PROGETTO DI TEST
+->dotnet add xunit -f net6.0 dir/MyProject.csproj
+
+PUBBLICARE UN PROGETTO
+->dotnet publish 
+->dotnet publish --runtime linux-arm --self-contained
+
+* GESTIRE UNA SOLUTION *
+
+CREARE UNA NUOVA SOLUTION
+->dotnet new sln -o MySolution
+
+AGGIUNGERE UN PROGETTO ALLA SOLUTION
+->dotnet sln add dir/MyProject.csproj
+
+
+
