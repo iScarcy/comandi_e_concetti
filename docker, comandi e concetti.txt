@@ -177,3 +177,99 @@ dobbiamo fare: docker inspect (hash o nome del contaier) e controllare la propri
 per vedere se troviamo il volume desiderato
 
 */
+
+************ altro esempio di docker file *************
+
+services:
+  mealie:
+    image: ghcr.io/mealie-recipes/mealie:v1.11.0 # 
+    container_name: mealie
+    restart: always
+    ports:
+        - "9925:9000" # 
+    deploy:
+      resources:
+        limits:
+          memory: 500M # 
+    volumes:
+      - mealie-data:/app/data/
+    environment:
+      # Set Backend ENV Variables Here
+      ALLOW_SIGNUP: false
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Rome
+      MAX_WORKERS: 1
+      WEB_CONCURRENCY: 1
+      BASE_URL: https://localhost
+
+  debug:
+    image: ubuntu
+    entrypoint: "bash -c 'while true; do sleep 1; done'"
+    volumes:
+      - mealie-data:/mnt/mealie
+
+volumes:
+  mealie-data:
+
+  In questo file possiamo vedere che abbiamo l'immagine del servizio mealie, 
+  si presti attenzione alla voce "volumes" in quanto non c'è indicato un percorso ma il nome di un volume mappato su /app/data del contaier. 
+  Grazie a quest'impostazione il contaier potrà leggere e scrivere i dati sul volume indicato, per ogni tipologia di contaier è necessario guardare la documentazione
+
+
+
+  ********* NETWORKING **********
+
+  Ne esistono di tre tipi di driver:
+	- null: il contaier è completamente isolato 
+	- host: il contaier condivide l'interfaccia di rete con il sistema host, non c'è nessun genere di isolamento. Quello che è accessibile al sistema host, è accessibile al container
+	- bridge: fornisce un livello di insolamento tra quello che gira sul container e quello che gira sull'host, permette di creare le reti virtuali. 
+	  Ovvero reti con spazio diverso da quello del sistema host e dove possono comunicare i diversi container tra di loro in maniera privata
+
+	  Guariamo questi due esempi di docker file:
+
+	  services:
+		debug:
+			image: ubuntu
+			entrypoint: "bash -c 'while true; do sleep 1; done'"
+			networks:
+			- nginx-network
+			- default
+
+		networks:
+		nginx-network:
+			name: rete_nginx
+			external: true
+
+	---------------------
+
+	services:
+	php:
+		image: 'php:8.1-fpm'
+		container_name: php-morro
+		volumes:
+		- './app:/var/www/html'
+
+	nginx:
+		image: 'nginx:latest'
+		container_name: nginx-morro
+		ports:
+		- '8080:80'
+		- '8443:443'
+		volumes:
+		- './app:/var/www/html:ro'
+		- './config/nginx:/etc/nginx/conf.d'
+		depends_on:
+		- php
+		networks:
+		- default
+		- nginx
+
+	networks:
+	nginx:
+		name: rete_nginx
+
+
+	QUESTI DUE CONTAIER CONDIVIDONO LA STESSA RETE VIRTUALE rete_nginx.
+	Il contaier ubuntu può accedere alla pagina del contaier dove c'è PHP, 
+	su ubuntu nella sezione networking specifichiamo la proprietà external: true per indicare che si tratta di una rete esterna (già esistente e che quindi non va richieta)
