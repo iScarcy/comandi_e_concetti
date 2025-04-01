@@ -1,0 +1,25 @@
+1. Come si crea un componente ?
+- In un file .dart
+- usando un comando da terminale
+- una classe che estende StatelessWidget o StatefullWidget
+- override del medoto build
+- restituire un componente
+
+COMANDO PER CREARE UN NUOVO PROGETTO
+---> flutter create nomeproggetto --package nomedominio.nomeazienda
+es: flutter create Me14Gallery --org it.scarcydev
+
+dopo aver creato le cartelle delle piattaforme che non interanno,
+si può andare nel file lib/mail.dart e ripulire il file generato
+
+es: 
+    void main() {
+    runApp(App());
+    }
+
+    class App extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+        // TODO: implement build
+        throw UnimplementedError();
+    }}
