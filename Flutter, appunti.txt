@@ -23,3 +23,56 @@ es:
         // TODO: implement build
         throw UnimplementedError();
     }}
+
+ **** REGOLA SUL CAMPO ****
+
+ Quando dichiaro una classe "App" ritorno una MaterialApp che dentro può avere più schermate. 
+ La scherma base è la scarmata "home", questa può contiene un'altra classe dichiarata sempre nello stesso file o in un file a parte (dentro la directory pages).
+ -> In quest'ultima classe si ritorna una classe Scaffold che sarebbe il foglio bianco della nostra schermata e questo foglio bianco può essere diviso in più parti:
+    --- appBar
+    --- body
+    --- altri componenti (tipo bottoni)
+
+Per creare un pulsante possiamo usare il componente floatingActionButton
+
+APPBAR -> è il componente che ci permette di chiarare una barra in cima alla barra, si può dichiarare così:
+    appBar: AppBar(
+        title: Text("titolo"),
+        center:true
+    )
+
+FLOATINGACTIONBUTTON -> floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          setState(() {
+            counter = counter + 1;  
+          });
+          
+        },
+        child: Icon(Icons.plus_one),
+        ),
+
+ ---> Regola fortissima !!! se mi metto ad inizio rigo e digito solo "s", ho la possibilità di selezionare dei template di codice già pronto (per esempio quello di una stateful widget)
+
+----->>>>> STATEFUL WIDGET <<<<<<-------
+
+ESEMPIO
+
+Class HomePage extends StatefulWidget{
+	@override
+	State<HomePage> createState() => _HomePageState();
+}
+
+Class _HomePageState extends State<HomePage> {
+	int count = 0;
+
+	@override
+	Widget build(BuildContext context) {
+		return Tex("valore contatore: $count");
+	}
+}
+
+REGOLA: Se dichiaro una classe che estende una StatefulWidget devo dichiarare due classi,
+        una in cui dichiato la classe e la seconda dove dichiaro lo stato usato dalla prima classe
+
+
+Ogni volta che si vuole cambiare lo stato di una classe si deve usare il metodo "setState", questo permetterà l'aggiornamento grafico (sul dispositivo) del valore della varibile all'interno dello stato
