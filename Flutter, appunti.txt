@@ -76,3 +76,10 @@ REGOLA: Se dichiaro una classe che estende una StatefulWidget devo dichiarare du
 
 
 Ogni volta che si vuole cambiare lo stato di una classe si deve usare il metodo "setState", questo permetterà l'aggiornamento grafico (sul dispositivo) del valore della varibile all'interno dello stato
+
+CICLO VITA componenti
+
+- createState
+- initState (richiamato una sola volta quando il compnente viene creato. Permette di inizializzare delle varibili o di richiamare delle funzioni all'avvio del componente)
+- build (costruisce la grafica del componente)
+- dispose (richiamato quando il componente non è più visibile)
