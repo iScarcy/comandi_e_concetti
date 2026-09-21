@@ -1,3 +1,11 @@
+0. Progetto Flutter, parti interessanti
+lib/main.dart : dove c'è il nostro codice
+analys_options.yaml: serve per stabilire le opzioni del compilatore
+nomeprogetto.imi: xml di settings
+readme.md: definisce le info di un Progetto
+pubspec.yaml: file di configurazione dove si posso definire un pò di cose, sopratutto lib esterne o asset
+pubspec.lock: definisce tutte le dipendenze effettive del Progetto
+
 1. Come si crea un componente ?
 - In un file .dart
 - usando un comando da terminale
@@ -23,6 +31,11 @@ es:
         // TODO: implement build
         throw UnimplementedError();
     }}
+
+
+--> SI PUO' GENERARE DIRETTAMENTE UN PROGETTO SENZA ALCUNE cartelle
+
+flutter create --platforms=android,ios nome_progetto 
 
  **** REGOLA SUL CAMPO ****
 
@@ -83,3 +96,58 @@ CICLO VITA componenti
 - initState (richiamato una sola volta quando il compnente viene creato. Permette di inizializzare delle varibili o di richiamare delle funzioni all'avvio del componente)
 - build (costruisce la grafica del componente)
 - dispose (richiamato quando il componente non è più visibile)
+
+Widget lifecycle
+StatelessWidget
+
+Semplice:
+
+costruito
+renderizzato
+fine
+ 
+Lifecycle principale
+
+Ordine:
+
+createState()
+initState()
+build()
+didUpdateWidget()
+dispose()
+
+__________________________________________________________
+-> initState()
+
+Chiamato UNA volta, perfetto per:
+    - fetch iniziale
+    - controller
+    - animation
+    - listener
+
+__________________________________________________________
+-> build()
+
+    Può essere chiamato:
+        - continuamente
+        - molte volte
+    Deve essere:
+    - veloce
+    - puro
+    - senza side effects
+
+__________________________________________________________
+-> dispose()
+
+    Serve per pulire:
+        - stream
+        - controller
+        - animation
+        - listener
+
+__________________________________________________________
+-> didUpdateWidget()
+
+    Usato quando:
+    - il parent rebuilda
+    - arrivano nuove props

@@ -1,0 +1,37 @@
+Livelli principali
+
+1) Presentation Layer
+
+    Contiene:
+
+    Widget
+    schermate
+    state management
+    UI state
+
+    Esempi:
+
+    Riverpod provider
+    Bloc/Cubit
+    ViewModel
+
+2) Domain Layer
+
+    Il cuore business.
+
+    Contiene:
+
+    entities
+    use cases
+    repository abstract
+
+    NON conosce Flutter.
+
+3) Data Layer
+
+    Contiene:
+
+    API
+    database
+    DTO
+    repository implementation
