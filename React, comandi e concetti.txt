@@ -1,1 +1,11 @@
 Creare un nuovo progetto con vite: npm create vite@latest
+Installare react rout: npm i react-router
+Installare axios: npm install axios
+installare redux: 
+installre Tailwind: npm install tailwindcss @tailwindcss/vite
+- hooks
+- state 
+- lifecicle componente
+- form controls 
+- route
+- redux 
