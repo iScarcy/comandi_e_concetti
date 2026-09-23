@@ -1,0 +1,137 @@
+.NET Standard 2.0: è una specifica che definisce un insieme comune di API .NET. Serve a garantire che una libreria che targetta quello standard possa essere utilizzata dalle implementazioni .NET compatibili. Non è un runtime, ma un contratto di API condivise.
+
+<TargetFramework>netstandard2.0</TargetFramework>
+___________________
+
+Quali sono, secondo te, le principali differenze tra un'API REST e un servizio SOAP?
+
+SOAP utilizza messaggi XML e, rispetto a REST, è un protocollo molto più strutturato e formale.
+
+E hai colto una differenza importante: in REST i verbi HTTP hanno un ruolo centrale: Get, Post, Delete, etc
+
+In SOAP invece non ragioni normalmente in termini di CRUD associato ai verbi HTTP. Il messaggio SOAP contiene un'operazione, ad esempio:
+
+<soap:Body>
+    <GetUser>
+        <id>123</id>
+    </GetUser>
+</soap:Body>
+
+OAP possiede funzionalità e standard specifici per scenari enterprise, ad esempio:
+
+WS-Security
+affidabilità dei messaggi
+transazioni
+XML Schema
+WSDL
+
+
+__________________
+WCF, Windows Communication Foundation, è un framework Microsoft del .NET Framework utilizzato per realizzare servizi e sistemi di comunicazione tra applicazioni. È molto utilizzato in applicazioni enterprise e può utilizzare protocolli come SOAP, con contratti, endpoint e binding configurabili.
+
+[ServiceContract]
+public interface IUserService
+{
+    [OperationContract]
+    User GetUser(int id);
+}
+__________________
+Cos'è SAML?
+
+SAML = Security Assertion Markup Language.
+
+È uno standard utilizzato soprattutto per autenticazione e Single Sign-On (SSO) tra applicazioni diverse.
+
+Ci sono principalmente due attori:
+
+Identity Provider (IdP) → gestisce l'identità dell'utente e l'autenticazione.
+Service Provider (SP) → è l'applicazione alla quale l'utente vuole accedere.
+
+Una volta autenticato, l'IdP comunica all'applicazione:
+
+"Questo utente è Giuseppe e l'autenticazione è avvenuta correttamente."
+
+Questa informazione viene trasmessa tramite una SAML Assertion, che è un documento XML firmato digitalmente.
+
+L'applicazione si fida dell'Identity Provider e quindi non deve necessariamente gestire direttamente username e password dell'utente.
+
+Perché è collegato all'SSO?
+
+Perché l'utente può autenticarsi una volta presso l'Identity Provider e poi accedere a più applicazioni senza dover inserire nuovamente le credenziali.
+
+__________________
+
+OpenID Connect (OIDC) è un protocollo di autenticazione costruito sopra OAuth 2.0.
+
+La distinzione importante è questa:
+
+OAuth 2.0 → autorizzazione
+
+Risponde principalmente alla domanda:
+
+"Questa applicazione può accedere a questa risorsa?"
+
+OpenID Connect → autenticazione
+
+Aggiunge a OAuth 2.0 il concetto di:
+
+"Chi è l'utente che si è autenticato?"
+
+E introduce, tra le altre cose, l'ID Token, normalmente un JWT, che contiene informazioni sull'identità dell'utente.
+
+__________________
+
+async/await
+
+Il punto fondamentale è che mentre l'operazione I/O è in attesa, il thread che stava gestendo la richiesta può essere liberato per gestire altro lavoro. permette al thread di essere utilizzato per altro lavoro durante l'attesa
+
+
+___________________
+
+
+Però se ti chiedessero:
+
+"Cos'è un certificato X.509?"
+
+dovresti poter rispondere:
+
+"È un certificato digitale che associa un'identità a una chiave pubblica ed è normalmente firmato da una Certificate Authority."
+
+Se chiedessero:
+
+"Cos'è mTLS?"
+
+"È una variante di TLS in cui non viene autenticato solamente il server: anche il client presenta un certificato, permettendo l'autenticazione reciproca tra i due sistemi."
+
+E:
+
+"Cos'è una XML Digital Signature?"
+
+"È una firma digitale applicata a un documento XML, che permette di verificarne l'integrità e l'autenticità utilizzando la coppia di chiavi crittografiche."
+
+_______________________
+
+La domanda delle domande.
+
+Se domani ti chiedono:
+
+"Cos'è la Dependency Injection?"
+
+io eviterei una definizione troppo scolastica. Visto che l'hai già utilizzata, puoi rispondere in modo molto concreto:
+
+"La Dependency Injection è un pattern che permette a una classe di ricevere dall'esterno le dipendenze di cui ha bisogno, invece di crearle direttamente. In questo modo si riduce l'accoppiamento tra le classi, si separano le responsabilità e diventa più facile sostituire le implementazioni e fare i test."
+
+Poi puoi fare un esempio:
+
+public class UserService
+{
+    private readonly IUserRepository _repository;
+
+    public UserService(IUserRepository repository)
+    {
+        _repository = repository;
+    }
+}
+
+___________________________
+
