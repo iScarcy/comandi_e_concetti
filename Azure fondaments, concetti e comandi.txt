@@ -1,0 +1,322 @@
+Corso per certificazione per AZ900 (io speriamo che mi certifico)
+Esercitazioni: https://github.com/bkannaiy/AZ-900T0x-MicrosoftAzureFundamentals/tree/master/Instructions/Walkthroughs 
+BREACK POINT VIDEO: Video 2,  
+4 MODULI
+    - Concetti di Cloud Computing
+    - prove su servizi di Azure
+    - approfondimento sicurezza
+    - strutture prezzo
+
+Perché adottare soluzione Cloud, benefici
+Quando un cliente adotta una soluzione cloud non è detto che serva tutto, di solito servono quelle di computazione (macchine virtuali)
+ 
+ - CONCETTI DI BASE DEL CLOUD 
+ Vantaggi: 
+        - Elevata elasticità  (poter aumentare/ridurre le risorse di un sistema in caso di necessità senza preoccuparsi dell'infrastruttura).
+        - Elevata scalabilità (verso l'infinito e oltre). 
+        - Tollerenza ai guasti. 
+        - Costi prevedibili.
+        - Attenzione alla sicurezza.
+
+Economia di scala: risparmi ottinutti operando su grandi numeri si possono ottenere sconti
+
+Differenza tra home made e cloude: nel primo caso ci sono forti imbestimenti iniziali (conviene se ammortizato negli anni), nel cloud si spende quanto si consuma (intervalli mensili)
+
+Esistono anche dei modelli ibridi del cloud, cioè non tutti in cloud 
+    - Cloud privato
+        Messo a disposizione da alcune tipologie aziende, che costruisce un cloud non per clienti esterni ma per altri dipartimenti della stessa azienda. 
+        Realizzato all'interno del proprio CED.  
+    - Cloud pubblico
+        Cloud gestido da un provider gestito da grandi aziende (google, microsoft, amazon) che mettono a disposizione le proprie risorse lavorative. L'accesso è tramite internet.
+        Vantaggi in termini di governance dell'azienda.
+    - Cloud ibrido
+        Una vita di mezzo tra tenersi tutto in casa e avere tutto su cloud. Questo modello fornisce la massima flessibilità. 
+        E' un pò più complesso da gestire perché dobbiamo gestire le due modalità di cloud
+
+-> Modelli di servzi realizzati con tecnoliga cloud
+
+    Software as service (SaaS)
+        Si aggiunge ancora un livello di astrazione rispetto ai precedenti. L'utilizzatore ha disposizione soltanto delle applicativi (post elettronica, office, etc.)
+    
+    Pratform as service (PaaS)
+        Riprende l'IaaS ma aggiunge altre servizi, per esempio non creiamo più le macchine virtuali in quanto se ne occupa il provider rendendo per noi il tutto trasparente.
+        Anche le applicazioni utilizzate sono gestite dal provider.
+
+    Infrastructure as service (IaaS)
+        Affito un'infrastruttura di elaborazione dove noi possiamo creare e gestire delle macchine virtuali. Implementiamo i nostri applicativi in autonomia.
+
+    On-Premises (Private Cloud)    
+
+ *****  Secondo modulo (SERVIZI CORE) *****
+
+   COMPONENTI DELL'INFRASTRUTTURA Azure
+   Divisa in una 50 regioni (aree geografiche) circa, in ogniuna di essa c'è un data center. 
+   Quando creiamo una risorsa decidiamo in quale regione crearla, si dovrebbe creare nella risorsa più vicina a noi ma spesso si sceglie quella più economia.
+   Attenzione ai dati sensibili se possono essere collocate in quell'area.
+   Le regioni sono accoppiate, alcune tipologie di dati sono rindondati nelle regioni. Nel momento ci sia un guasto in una regione, si vanno a prendere tali risorse dalle risorse accoppiata
+
+   Come i dati sono disponibili (disponibilità senza interruzioni) dipende anche da noi come rendiamo le risorse rindondati e scalabili.
+   ES:  Una singola macchina virtuale è semplice da mettere in piedi ed ha una percentuale di raggiungibilità (99.9%).
+        Nel momento in cui creiamo un set di macchine virtuali la probabilità che le risorse siano disponibili, anche in presenza di guasti importanti, sono più alte.
+        Se si dovesse guastare un'intero data center, entra in gioco un altro data center della stessa regione.
+        Se si dovesse guastare l'intera regione (che sfiga!), in caso di disaster recovery un sistema configurato con una regione accoppiata può rendere disponibili le proprie regioni rendendole accessibili dalla regione accoppiata.
+        Tutte queste possibilità di configurazione, le possiamo stabilire quando creiamo la macchina virtuale
+
+    COME VENGONO ORGANIZZATE LE RISORSE ALL'INTERNO DI UNA SOTTOSCRIZIONE ???
+    Una sottoscrizione è il contenitore delgli oggetti che andiamo a creare, come si fa a vedere cosa c'è dentro ? Andare nella home e vedere cosa c'è dentro.
+    Quando si crea una risorsa, bisogna indicare il GRUPPO DI RISORSE (è obbligatorio). 
+    Come inseriamo gli oggetti nei gruppi di risorse, dipende da noi; i gruppi di risorse non possono essere gerarchici
+
+    COSA CI METTE A DISPOSIZIONE AZURE ?
+    - Macchine virtuale
+    - Virtual network
+    - Spazio di archiviazione
+    - etc. 
+
+    Quando creiao un macchina virtuale utilizziamo in modello IaaS 
+    CREAZIONE MACCHINA virtuale
+        1) Creare uns sottoscrizione se non c'è
+        2) Creare un gruppo di risorce se non c'è
+        3) nome VM
+        4) scelta regione (US East US)
+        5) Sistma operativo 
+        6) Dimensione macchine (vedere che impostazioni ci sono di default)
+        7) username
+        8) password 
+        9) come la vogliamo rendere raggiungile ? (rdp e http, desktop remoto e browser, io direi anche ssh)
+        
+
+    CONTAINER
+        E' un oggetto che estende il concetto di virtualizzazione; una macchina virtuale virtualizza semplicemente i componenti hardware di un pc host (poi noi dobbiamo installare tutto)
+        un container è un concetto di virtualizzazione che prevede di virtualizzare anche il sistema operativo o altri applicativi Software.
+        Un container è un esempio di Platform as Service (PaaS)
+
+    Esercizio sui container: 
+        CREARE: Andare su Container -> Container instances -> creare nuovo container -> impostare un nuovo dns
+                scarcy-container: scarcy-container-dns.ekeqhwfjb9f5f6c6.eastus2.azurecontainer.io
+
+    NETWORING (Altro serivzio core)
+        Qualsiai sistema andreamo a creare, ci serve la connettività. 
+        Azure mette a disposizione diversi tipi di networking:
+            - Azure Virtual network: fornisce comunicazione tra le varie entitià di azure 
+            - Azure Load Balance
+            - Vpn Gateway
+            - Application Gateway
+            - CDN 
+
+        CREARE UNA RETE virtuale
+        Quando creaiamo una macchina virtuale dobbiamo necessariamente creare una rete virtuale, altrimenti la macchina non sarebbe raggiungibile    
+
+    ESERCIZIO 03: CREARE UNA VIRTUAL NETWORK, DUE MACCHINE VIRTUALI CON LA STESSA RETE VIRTUALE E TESTARE LA CONNESIONE TRA LE DUE MACCHINA 
+        - Dopo avere creato le due macchine virtuali e la rete virtuale:
+            1) Entrare sulla prima macchina in rdp, aprire power shell come amministratore
+            2) Digitare: New-NetFirewallRule –DisplayName “Allow ICMPv4-In” –Protocol ICMPv4
+            3) Entrare sulla seconda macchina virtuale e fare il ping verso la prima
+
+
+    AZURE DATA CATEGORIES
+        Dati strutturati: Database
+        Dati semi strutturati: Immagini, JSON, Database non SQL
+        Dati non strutturati: PDF
+
+        Azure storage services 
+         IN IaaS abbimo Disk e file
+         In PasaS abbiamo Containers, Tables e Queues
+
+    ESERCIZIO 04: CREARE UN BLOB STORAGE     
+        Da all service:
+            1) andare su Storage Account
+            2) andare su blob service 
+            3) creare un container
+            4) fare un upload di un file (.txt, .jpg, etc.
+            
+        --> questo tipo di servizio possiamo vederli come drop box/google drive, etc. Dipende se lo rendiamo disponibile su internet.    
+
+    ** Azure potrebbe essere visto un backup **
+    
+    AZURE DATABASE SERVICES 
+        - Azure Cosmos: Database distribuito
+        - Azure SQL Database 
+        - Azure database Migration
+
+    ESERCIZIO 05: CREARE UN SQL SERVER 
+        Da all service:
+            1) Creare un sql-server database se non esiste già
+            2) Creare un database sql, dare accesso pubblico e autenticazione sql server
+            3) Autorizzare gli ip che possono collegarsi
+
+
+    ** AZURE MARKETPLACE **
+        entra id, sono le utenze mirosoft gestite da azure 
+
+        Azure function, funzione specifiche, recuperare dati da db  (timer trigger)
+
+        storage container 
+
+        console application 
+
+        Service Bus (coda), è un servizio dotato di deadh letter (serve a censiri gli invi non andati a buon fine) 
+
+
+     *** VIDEO 3 ***
+
+     Module: Identify Azure soluction
+
+     Azure IoT Central/Azure Iot Hub: Internet delle cose     
+
+     -> Big Data analytics
+
+        Azure SQL Data Warehouse
+        Azure Machine Learning service
+        AZURE FUNCTIONS
+        Azure Logic Apps
+        Azure Event Grid
+
+     -> Azure App Service <-
+        Possibilità di usare più linguaggi e framework
+        Scalabilità a livello globale
+        sicurezza
+        Integrazione con visual studio
+
+    ** Strumenti di gestione Azure **
+        Interfaccia grafica (portale)
+        Terminale (cloud shell)
+        app mobile
+
+    ** Azure Advisor
+        Un servizio che quando interrogato, ci consiglia cosa si può migliorare nella nostra infrastruttura   
+
+
+   --> Sample Code from Microsoft Developer Tools <--
+   E' un MARKETPLACE per template applicativi
+   Creazione di una macchina virtuale tramite power shell:
+    1) Creazione un nuovo gruppo di risorse: New-AzResourceGroup -Name myRGPS -Location EastUS
+    2) Creazione macchina virtuale (chiede di impostare username e password)
+        New-AzVm `
+                -ResourceGroupName "myRGPS" `
+                -Name "myVMPS" `
+                -Location "East US" `
+                -VirtualNetworkName "myVnetPS" `
+                -SubnetName "mySubnetPS" `
+                -SecurityGroupName "myNSGPS" `
+                -PublicIpAddressName "myPublicIpPS"
+
+   **** MODULO 3, SICUREZZA ****
+
+   La protezione dei dati, è una responsabile condivisa tra noi e Microsoft.
+   In azure, definiamo diversi livelli di protezione. Nel caso in cui se ne buca uno abbiamo gli altri come protezione. Da On-Premeses a SaaS demandiamo in modo crescente la sicurezza verso Microsoft             
+
+   AZURE FIREWALL 
+    Fornisce una protezione a livello perimetrale
+
+   Network Security Group: 
+        - Elemento che fornisce sicurezza a delle interfaccie di rete specifiche e a delle subnet. E' il FIREWALL di ogni subnet e di ogni interfaccia su cui è definito (Livello 4)
+        
+    Application Security Group: FIREWALL di livello 7 che si può applicare ad un gruppo di risorse 
+
+** VIDEO 4 **
+
+Azure Identify services 
+
+Differenza tra autenticazione e autorizzazione
+autenticazione: il sistema verifica che le credenziali fornite dall'utente siano corrette. Si fa prima dell'autorizzazione. 
+autorizzazione: verifica i permessi di un utente autenticato
+
+***** Azure Active directory (AD) *****
+Servizio di Azure che serve a gestire autorizzazione e autentiazione come:
+    - Autenticazione
+    - SSO 
+    - Application managment 
+    - B2B
+    - B2C (login con plugin esterni come fb, google, etc) 
+    - Device managment
+ 
+ Azure implementa anche la 2FA
+
+ Azure Security Center (è un servizio che provede a dare ulteriori livelli di sicurezza alla nostra infrastrutura)
+
+ Azure Key Vault, servizio di Azure usato per archiviare i secret (tipo quelle per gli access token)
+
+ Azure Information Protection (AIP), è più adatto a infrastrutture che utilizzano Office 365 in quanto serve a classificare e proteggere documenti
+     - potrebbe etichettare automaticamente i documenti in base a delle loro caratteristiche, il contenuto per esempio o la tipologia di documento.
+
+ Azure Advanced Threat Protection (ATP): Analizzatore di traffico anomalo   
+
+ **********  AZURE GOVERNANCE METHOLOGIES ************
+
+POLICY DI AZURE PER CONTROLLARE/MONITOR CHI UTILIZZA, MODIFICA O CALCELLA LE RISORSE DEL SISTEMA (per esempio più utenti che lavorano sullo stesso file excel)
+
+Abbiamo le POLICY DEFINITION (gruppo multimo di definizioni di polocies per una singola unit) e POLICY ASSIGNMENTS (sono policies assegnate ad uno specifico contesto e riducono i bisogni di creare altre regole in modo ripetitivo) 
+
+
+****** Ruoli basati sull'identià (RBAC) *****
+
+Azure Active Directory assegna dei ruoi a persone, applicazioni o gruppi di utenti
+
+
+***** RESOURCE LOCKS *****
+
+Sono degli strumenti per mettere dei blocchi su delle risorse delicate per evitare che vengano cancellate erronemanete da utenti che sono autorizzati a cancellare ma non sono amministratori.
+
+
+**** MONITORING AND REPORTING ****
+
+AZURE ci mette a disposizione dei TAG per individuare/etichettare delle risorse, utile soprattuto in ambito di definizione dei costi di una risorsa. 
+
+Azure Monitor, è un insieme di diversi strumenti che servono a monitorare la nostra infrastruttura. 
+
+Azure Service Health: abbiamo la possibilità di monitorare, sia l'andamento globale di azure (situazioni datacenter) sia lo stato dei servizi che stiamo utilizzando, sia le nostre risorse 
+
+
+*** MODULO PRIVACY, COMPILANCE AND DATA PROTECTION STANDARDS ***
+Strumenti che Microsoft mette a disposizione per osservare le leggi standard sulla privacy dei dati, conformità operativa
+
+Ci sono diverse normative:
+    - GDPR
+
+Per ogni nazione, Microsoft, fornisce la documentazione per la privacy     
+
+Trust Center: un portale relativo alla Security, privacy, policies, compilance riguardante i prodotti cloud di microsoft
+
+COMPILANCE MANAGER: Microsfot da un punteggio allo stato di complinace di un'architettura e aiuta a raggiungere una determinata certificazione indicando le azioni da fare per acquisire tale certificazione.
+
+Identify Azure Goverment Services:
+
+
+**** VIDEO 5 *****
+
+ESISTONO DIVERSE TIPOLOGIA/MODALITà DI SOTTOSCRIZIONI.
+Dipende dalla dimensione dell'azienda (esistono anche delle versioni gratuide)
+
+Per ogni sottoscrizione deve esistere un account, un account può aver associato diverse sottoscrizione.
+Gratuida: ti danno 200 dollare (170 euro) per 30 giorni. Poi si paga.
+Pay-as-you-go: Pagamento mensile in base all'utilizzo.
+Enterprise Agreement: Per grandi aziende.
+Student:
+
+si possono fare anche sottoscrizioni diverse per gruppi diversi
+
+Plannig and Managing Costs: calcolare i costi del cloud
+
+Identify Zones for Billing Purpose: 
+    - nella maggior parte dei casi, i dati verso Azure sono gratuidi mentre si pagano quelli che da Azure vanno verso fuori. 
+    - Alcune zone costano di meno di altre
+
+** Ottenere Supporto **
+
+Il supporto che si può ottenere da Microsoft dipende dalla nostra sottoscrizione
+
+** Azure Service Level Agreements (SLAs)
+
+Cos'è ? un accordo che dipende dalla tipologia di risorsa
+    - Sono documenti in cui si definiscono gli standard di performance che Microsoft garantisce ai suoi servizi     
+
+
+ ******* CICLO DI VITA DEI SERVIZI AZURE ******* 
+    Come funziona ?
+    1) NEW: ci sono nuove funzionalità che vengono testate e provate
+    2) ACTIVE: si attivano queste funzionalità (si verifica se ci sono bug)
+    3) RESOLVED: stato in cui tutti i bug sono stati risolti/chiusi
+    4) CLOSED: la funzionalità è stata pubblicata
+
+    Nel caso in cui venissero fuori altri bug dopo la pubblicazione, si riaprono bug per regressioni
