@@ -1,0 +1,229 @@
+Benefit nel ciclo di vita dello sviluppo
+  -  Fast development cycles
+  -  Reduce repetitive work
+  -  Higher code quality
+  -  Improve test coverage
+  -  Predictive maintenance
+  -  Enhanced productivity
+
+ Rischi:
+    - concetti legati ed etici
+    - rischi di sicurezza nel codice generato dall'AI 
+    - ECCESSIVA DIPENDENZA DAI CONSIGLI DALL'AI
+    - Privacy
+    - si perdono compentenze usando AI tools 
+
+  Tools d'esempio  
+    - GitHub Copilot
+    - Codeium
+    - SonarLint
+    - Hugging Face Models (NLP for code analysis)
+    - ChatGPT / Code Llama
+
+
+    GOOD & BAD PROMPT
+
+    Bad promt  -> richieste vaghe, codice scadenza
+    Good promt -> richieste chiare, contesti, esempi
+
+  POSSIAMO CREARE Dei Custom GPT anche se ormai sono stati dismessi in favore dei PLUGIN
+
+  CODE GENERATION TOOLS
+  WHAT'S A AGENT? Windsurf, Tabnine
+
+  Create new software with AI
+  Refactoring with AI 
+
+  OPTIMISE COMPUTATIONAL COST WITH AI 
+
+  **************** BUILING OFFLINE GENERATIVE IA ******************
+
+  Python è ottimizzato per AI 
+
+  Esercizio: Build a Code-Gen Chat App
+      1) Pick a model (per lingua)
+      2) Download from Hubbing Face
+        prendere un modello,
+        da destra cliccare su "Use model",
+        cliccare su Trasfrormers 
+        copiare la prima parte 
+
+      3) Build a web chat UI 
+      4) Optimize & test  
+
+
+Voglio creare un mio chatbot. L'idea è di usarlo via website. Il modello che useremo proviene da hugging face. 
+Dovrebbe essere uno spazio per inserire del testo e dopo per vedere tutta la converazione avvenuta con il mio bot. 
+Usiamo il seguente codice dai modelli del sito hugging face:
+
+from transformers import pipeline
+
+pipe = pipeline("text-generation", model="meta-llama/Meta-Llama-3-8B-Instruct")
+messages = [
+    {"role": "user", "content": "Who are you?"},
+]
+pipe(messages)
+
+
+AI-Assisted Vulnerability Detection
+ 
+MCP Server - MODEL CONTEXT PROTOCOL 
+  - Integration fatigue
+  - Governance
+  - Catalog of save campability
+
+  Appare 25 NUOVA
+  late 2023 - 2025: documentazone
+  2925: Tools (GUID, SDK, etc)
+
+  keep 3 word:
+    Tools 
+    Resources
+    Prompts
+  
+  Architecture  
+    Client 
+    MCP boundary 
+    Request
+
+  When use ? 
+    - Whena many clients need the same capabilities
+    - Consistency via shared Prompts
+    - Safe front door to legacy systems
+
+  Whan not use ?
+    - Single app
+    - Not UI framework
+    - Doesn't replicate IAM o secrets storage
+
+  Developer tools
+    MCP Inspector (GUI)
+    CLI 
+    Python SDK 
+
+  Trasport & development shapes
+  Security e Safety
+  Ecosystem
+    Open docs and example
+    Interoperability focus 
+    Servers for IDEs, support, research
+
+   THE PLAN 
+     1) Pick a tiny scope (tools/resources)
+     2) Define contracts & error handling
+     3) Local stdio + insepector; add CLI in CI
+
+    Risks & mitigations (brginer level) 
+      Access: least privililege
+      Inputs: schema validation
+      Audit: logs with request IDs
+
+    NOT A REPLACEMENTE FOR API DESING
+    NOT IAM OR SECRETS storage
+    NOT A UI FRAMEWORK
+
+--> LangChain
+   
+   Is a framework to build LLM-powerd apps (Python/JS)
+   Composale building blocks: promp
+
+   Multi-step logic 
+   Tool use 
+   Retrival Augmented Generation (RAG) for your data
+   Evaluation, tracing, and iterative improvement
+
+   Models: LLMs and Embeddings
+   Prompts: Templates + variables
+   Parsers: tunr free texto into JSON
+   Chains/LCEL: compose steps like pipes
+   Tools/Agents: let the model call functions
+   RETrivers/RAG: fetch context from your data.
+
+   LCEL LangChain Expression Language
+ 
+    Data Loading & Chunking
+    1) Loaders: PDFs, MD, HTML, folders
+    2) Split into chunks with metadada
+    3) Tine chunk size/overlap for your domain
+    
+    Embeddings & Vector Stores 
+    4) Turn text into vectors for similarity search
+    5) Stores: FIASS, Chroma, cloud options.
+    6) Index once, reuse across expreriments
+
+    Retrivers & RAG
+    7) Retriver find relevant chunks
+    8) RAG injects them into the prompt.
+    9) Reduces hallucinations and anchors answers.
+
+    Tools & Function Calling
+    Wrap safe functions: calculator, file ops, git, HTTP
+    Give the model
+
+    AGENTS 
+      Agent = planner that chooses tools.
+      Start simple: funciton-calling with fixed tools.
+      Guardrails: approvals for writes, timeouts, rate limits.
+
+    Patterns for File Generating RAG
+      - Retrive templates/snippets -> propose a plan (JSON)
+      - Human approval -> tools execute the plan.
+      - Re-retrive -> test -> iterate   
+
+    ANTI PATTERS TO AVOID: 
+     Giant monolithic Prompts
+     Letting agents write anywhere on disk
+     No parsing/validation 
+     No traces, no test 
+
+
+   MCP vs RAG 
+
+   MCP = Model Context Protocol -> "let the model do things via tools/APIs" 
+   RAF = Retrieval-Augmented Generation -> "let the model know things from your sources"
+
+  Architectures at a glance - Architettura in sintesi
+
+  MCP stack: LLM <-> MCP client <-> MCP server (tools/resources)
+  RAG stack: LLM <-> Retriver (vector/keyword) <-> Knowledge store (docs/DB)
+
+  Combined loop: Retrive -> Decide -> Act -> Explain
+
+  When to prefer MCP:
+    - you must change a system state (CRUD, workflows, jobs)
+    - you need determinisim & auditability
+    - You need integration with existing APIs
+    - you want safety: sandboxing, allowlist, strinct scopes 
+
+  When to prefer RAG: 
+    - Answers must include up-to-date or private Knowledge
+    - You must reduce hallucinations and show citations
+    - Content changes frequently
+    - Need explanations grounded in your corpus
+
+   Use case 
+    MCP-only: schedule a job, post a message, export a report, update a record
+    RAG-only: answer policy questions, summarise docs with citations, compare versions
+    Combinated (Raccomanded): 
+
+   Security:
+    MCP: least privilege per tool; allowlist, strict schemas; full auting
+    RAG: index only autorised content, encorce ACLs at query timeouts
+    Both: plicy prompts, rate limits, human in the loop for sensitive actions
+
+   performance
+    MCP: acoid chatty loops, batch calls, cache tool results: desing narrow tools
+    RAG cache embeddings: restrick top-k; use re-ranking; pre-compute summaries
+    Global: smaller models + stronger Retrival
+
+   Conclusion:
+    IF it must act: start with MCP
+    IF it must know: start with RAG
+    IF both: RAG -> Decide -> MCP -> Summarise 
+
+    Evaluate 
+      - RAG: groundedness, citation accuracy, retrieval hit rate
+      - MCP: task success, errore rate, time to complet 
+      
+         
+   

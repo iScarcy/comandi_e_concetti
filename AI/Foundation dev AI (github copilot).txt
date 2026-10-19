@@ -1,0 +1,57 @@
+** TUTORIAL 3 ** 
+
+---> Da script isolati a Repository AI-ready <--
+
+Workflow 
+ 2 Obiettivi:
+    1) Ottimizzare ciò che l'agente deve leggere, capirne i limiti e trasformarli in potenzialità
+    2) Implettare in un Workflow agentico  
+
+
+    REGOLE DI CONTESTO
+        AGENTS.md 
+        copilog-instructions.md
+        *.instructions 
+
+    REGOLE OPERATIVE 
+        (regole agnostiche del contesto)
+
+Differenza tra file AGENTS.md *.istractions.md 
+    - il file AGENTS.md è autoritattiva in cartelle          
+    - *.instructions.md usa i global path 
+
+Servono per dare un contesto stabile al progetto (.instructions)
+
+SKILL (il futuro è un sistema automatizzato che agisce in backgroud parallelo al nostro lavoro)       
+    1) definire un front mapper con lo scopo di identificare il contesto (name, description)
+    2) titolo
+    3) Goal (Obiettivo)
+    4) Regole 
+        - le regole devono esssre agnostiche, 
+        - si possono definire output, 
+        - si possono definire script da usare nelle skill 
+        - poche regole
+    5) Output validabile 
+
+PROMPTS FILES (file ad elenchi)
+
+-----------------------------------------------
+---- STEP NECESSARI PER SCRIVERE UN AGENTE
+-----------------------------------------------
+
+0) nomeAgente.agent.md 
+1) front mapper (name, description)
+2) titolo
+3) ruolo (devi impersonare ...)
+4) missione (Obiettivi)
+5) focus area (contesto)
+6) Out strutturato 
+
+----> STRATEGIE DI MULTI-AGENT ORCHESTRATION <----
+ 
+ --> MCP <-- Model Contect Protocl
+
+
+
+
+
