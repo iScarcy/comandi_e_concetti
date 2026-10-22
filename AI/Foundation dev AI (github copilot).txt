@@ -51,6 +51,8 @@ PROMPTS FILES (file ad elenchi)
  
  --> MCP <-- Model Contect Protocl
 
+skill utili per il futuro:
+
 
 
 

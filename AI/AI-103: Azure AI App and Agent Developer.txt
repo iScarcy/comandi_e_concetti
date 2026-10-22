@@ -1,0 +1,66 @@
+SECTION 1
+    UNIT 1 - WHAT IS AN AI AGENT ?
+    *** An AI agent is a software service that works independently to complete tasks for users
+
+    THE TREE CAPABILITIES OF EVERY AGENT 
+
+    REASONING - Making Decisions: AIUTA L'AGENTE A PRENDERE DECISIONI ARRIVANDO ALL'OBIETTIVO STEP BY STEP
+    TOOL USE - TAKING ACTION: L'agente può chiamare servizi esterni per avere risorse a disposizione
+    MEMORY - REMEMBERING CONTEXT: l'agente ha disposizione le conversazioni precedenti per simulare una memoria umane e prendere decisioni in un consteso più ristrestto
+
+    SYSTEM MESSAGE IS A SETS RULES AND TONE TO HOW THE AGENT SHOULD ACT AND ANSWER USER REQUESTS. 
+
+    SIMPLE API Call vs. AGENT 
+    Una semplice invocazione di API prevede una domanda e una risposta, non c'è memoria. 
+    Il workflow di un agente è più complesso, se per esempio riceve la domanda "che tempo fa?" l'agente può decidere di chiamare un servizio meteo trami API tool e formulare una risposta per l'utente in base alle impostazioni del contesto. L'agente può ricordare la città dell'utente per le prossime chiamate.
+
+    STATEFUL VS. STATELESS: Le semplici chiamate api non hanno memoria, un agente invece simula di avere memoria perché riusa la cronologia delle conversazioni in chat e utilizza le informazioni del contesto
+
+    LLM (Large Language Model) è un modello statistico allenato da bilioni di esempi di testi per prevedere la prossima parola in una seguenza.
+    Gli LLM hanno un ruolo negli agenti perché ne sono il cervello, loro leggono ad interpretano le richieste dell'utente e decidono la prossima da fare
+    ma da soli non possono fare nulla: non possono chiamare API, fare ricerche nel web. Sarà l'agente, in base all'output prodotto dal LLM, a chiamare un servizio esterno o lanciare un programma.
+
+    TOOL CALLING: E' l'abilità di un agnte di richiedere e eseguire funzionalità esterne come una ricerca su un database o l'invio di una meali
+        -> come funziona ? l'LLM genera un output strutturato dicendo "ho bisogno di chiamare il servizio X con i parametri Y" e l'agente esegue.
+        --> senza il TOOL CALLING un LLM potrebbe solo parlare ma con esso può triggerare una reale azione nella realtà
+
+    MEMORY: la memoria per un agente significa il memorizzare le informazioni fornite dalla passate interazioni per usarle in futuro
+        -> Short - Term Memory (Session Context): Memoria a breve termine, un agente ricorda le informazioni date dall'utente nella stessa chat 
+        -> Long - Term Memory: La memoria a lungo termine che viene usata attraverso le sessione di conersazioni dell'utente
+        --> senza la memoria noi dovremo reinviare l'intera cronologia della conversazione ad ogni richiesta. Con la memoria, gli agenti salvano e usano le informazioni del contesto in modo più efficente.
+
+    WHAT IS MICROSOFT FOUNDRY ? 
+    E' una piattaforma cloud MICROSOFT dove si può creare, deployare e gestie agenti AI 
+        -> E' una "One stop shop": Foundry provvede a ciò che abbiamo bisogno, deployare un modello, gestire le autorizzazioni, usare tool sicuri. Il tutto in singolo servizio Azure
+        -> Foundry è il successore di AZURE AI STUDIO
+        -> Foundry include Hubs (container), Projects (agent workspace) e Agent Service (ambiene di deploy e esecuzione agenti)
+
+    Foundry TRACE: è un tool di debugging che mostra ogni decisione e azioni dell'agente durante una conversazione 
+        -> Definizione: Un trace è come fosse un log registrato ad ogni passo compiuto da un agente (con timestamp e risultato)
+        -> Quando avviene un reasoning loops, ovvero un loop in un cui un agente repere la stessa decisione più volte senza andare avanti, 
+        Foundry Trace mostra esattamente il loop da dove è partito e dove avvengono eventuali eccezioni che generato il loop durante la conversazione.
+
+    Entra Agent ID: E' una features di sicurezza che da ad ogni agente una propria indentità separata da un utente umano
+        -> Prima gli agenti scrivevano codice come un utente, adesso un Entra Agent ID da ad ogni agente una propria identi con dei permessi
+        SPONSORE CONCEPT: Uno sponsor è un umano che è responsabile delle azioni di un agente. Nonostante l'agente abbia il proprio ID, lo sponsor umano è responsabile del comportamente dell'agente.
+
+    Content Safety: è un servizio azure che analizza l'input e l'output di un agente per verificare se ci sono contenuto dannosi come parole violente    
+
+    Red Teaming for agents
+        -> Definizione: il red team agent è un team che intenzionalmente prova a complire il tuo agente attraverso l'invio di JAILBREAK ATTEMPTS, prompt injections and input inaspettati
+        --> Un Jailbreak è un prompt attentamente progettato con lo scopo di agirare il sistema dei messaggi dell'agente e i filtri di sicurezza, cosi il nostro agente ignoreranno le propri istruzioni
+        -- Prompt Injection Explained: La prompt injections si ha quando nell'input dell'utente sono inclusi comandi nascosti che sovrascivono le originali istruzioni dell'agente. 
+
+    ****** CI SONO DUE MODI PER CHIAMARE I SERVIZI AI DI AZURE ******
+
+    SDK
+        Definizione: un SDK è una libreria pre-scritta in Python che wrappa le chiamate rest verso Azure.
+                    Essendo un libreria wrappata è più semplice fare integrazioni con meno codice. 
+    REST  
+        Definizione: una chiamata REST è la via diretta per invocare un servizio azure usando una richiesta HTTP.
+                    Richiesta una gestione manuale del header/token 
+
+    QUANDO USARE QUALE: SDK è un più facile da usare, le chiamate REST ci danno più controllo e si possono usare con ogni linguaggio di programmazione
+
+    UNIT 2
+    
