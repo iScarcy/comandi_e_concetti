@@ -1,0 +1,50 @@
+Instllazione con vite: npm install tailwindcss @tailwindcss/vite
+andare in vite.config e inserire tailwindcss(), con relativo import, nei plugins utilizzati
+In App.css inserire @import "tailwindcss" NEL FILE INDE.css ALTRIMENTI NON FUNZIONA
+
+1. Centred Container
+Centered container is one of the most used pattern in modern website. Tailwind utility classes help you to keep your content aligned easily .
+<div class="max-w-4xl mx-auto px-4">
+  <!-- Content goes here -->
+</div>
+
+What's happening here?
+max-w-4xl: Limits the container width.
+mx-auto: Horizontally centres the container.
+px-4: Adds horizontal padding for spacing on smaller screens.
+
+2. Full-Screen Centred Content
+We can use full-screen centered content, which is perfect for splash pages or hero sections.
+
+<div class=" flex items-center justify-center h-screen">
+  <h1 class="text-3xl font-bold"> Welcome to My Site </h1>
+</div>
+
+Breakdown:
+flex: Enables Flexbox layout.
+items-center: this centers the content Vertically .
+justify-center: It centers horizontally.
+h-screen: This makes the div full height of the screen.
+
+3. Navbar with Space Between Items
+Navigation bars are important in a website, and Tailwind makes it super easy to create and to space items apart.
+
+<nav class="flex items-center justify-between p-4 bg-gray-100">
+  <div class="text-lg font-semibold"> Logo </div>
+  <ul class="flex space-x-6">
+    <li><a href="#"> Home </a></li>
+    <li><a href="#"> About </a></li>
+    <li><a href="#"> Contact </a></li>
+  </ul>
+</nav>
+
+4. Responsive Grid Layout
+Tailwind’s grid utilities help you build responsive layouts without writing media queries.
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+  <div class="bg-white p-4 shadow rounded"> Card 1 </div>
+  <div class="bg-white p-4 shadow rounded"> Card 2 </div>
+  <div class="bg-white p-4 shadow rounded"> Card 3 </div>
+</div>
+
+grid-cols-1, sm:grid-cols-2, etc.: Control how many columns show at different breakpoints.
+gap-6: Adds consistent spacing between items

@@ -14,8 +14,8 @@ pubspec.lock: definisce tutte le dipendenze effettive del Progetto
 - restituire un componente
 
 COMANDO PER CREARE UN NUOVO PROGETTO
----> flutter create nomeproggetto --package nomedominio.nomeazienda
-es: flutter create Me14Gallery --org it.scarcydev
+---> flutter create nomeproggetto --platforms piattaforme dove deve girare l'app
+es: flutter create --platforms=android,ios nome_progetto
 
 dopo aver creato le cartelle delle piattaforme che non interanno,
 si può andare nel file lib/mail.dart e ripulire il file generato
@@ -151,3 +151,173 @@ __________________________________________________________
     Usato quando:
     - il parent rebuilda
     - arrivano nuove props
+
+
+
+ __________________________________________________________
+Corso Udemy - Flutter e Dart, Complete Guide
+Section 2 - Flutter and Dart Basics -
+
+Widget Tree: MaterialApp, Scaffold, Container, Center   
+
+Parametri: per posizione, per nome {}, opzionali [] o obbligatori required, con valori di default
+Tipi di Variabili:
+    - Var: varibile 
+    - Final: costante 
+    - Const: ottimizza le performance permettendo a Dart evitando di duplicare aree di momoria per la stessa varibile
+
+Abbiamo tre tipi di bottoni:
+    - ElevetedButton
+    - OutlineButton
+    - TextButton(onPressed: onPressed, child: const Text("Click me))
+
+    ---> REGOLA DA RICORDARE <---
+
+    Se metto un widget dentro un Center, viene visualizzato al centro dello scherma 
+    ma se dopo inserisco il center in un widjet colonna, l'elemento rimane al centro ma dela colonna ovvero in alto dello schermo
+
+
+  Due concetti importati:
+        - Render Content Conditionally
+        - Lifting State Up
+          Cambiare schermata quando da due schermate sullo stesso livello dell'albero dei widget ma la funzione di cambio è ad un libvello superiore,
+          UNA possibilità è:  Dal padre si passa una funzione ai figli (una callback)
+                              ATTENZIONE, PROBLEMA: The instance member 'x-function' can't be accessed in an initializer
+                              -> SOLUZIONE: la definzione della nuova schermata si mette nel metodo initState
+          UN'ALTRA possibilità è: definire 2 stringhe, una per schermata, 
+                                  e usare un operatore terziario nella child del container
+                                  -> SOLUZIONE: in base al confronto tra le stringhe si visualizzerà una schermata o l'altra
+
+    
+    per trasformare un array di dati in un array di widjet custome, abbiamo questa possibilità:
+
+        ...currentQuestions[0].answers.map((answer) {
+              return AnswerButton(text: answer, onTap: (){});
+        })
+
+    //esempio di una scherma i cui elmenti prendono tutto lo spazio possibile sull'asse delle x (trattandosi di una colonna) 
+    // gli elmenti hanno un margine e un padding
+
+   return SizedBox(
+      width: double.infinity,
+      child: Container(
+        margin: EdgeInsets.all(40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(currentQuestions[0].text, style: TextStyle(color: Colors.white),),
+            const SizedBox(height: 30),
+        
+            ...currentQuestions[0].answers.map((answer) {
+                return AnswerButton(text: answer, onTap: (){});
+            })
+        
+          ],
+        ),
+      ),
+    );      
+
+
+    -------------
+
+    GOOGLE FONT:
+    - installre tramite: flutter pub add google_fonts
+      es:  Text(currentQuestions.text,
+              style: GoogleFonts.lato(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold
+              )
+            ),
+
+   ---------------------------------------------------
+
+   --> PASSING DATA via FUNCTION ACCROSS WIDGET <--
+
+   Si può sfruttare questo scenario interessante
+
+   Ho un componente genitore in un posso diarare una list di un certo tipo,
+   definire una funzione se aggiunge elemnte a questa list
+   e passare ad un componente figlio questa funzione, tramire suo costruttore, 
+   in modo tale che sia il componente figlio a chiamare tale funzione passando dei parametri definiri nel componente figlia.
+   A fine di questo processo, il componente padre si ritroverà una lista riempita di elementi definiti nel coponente filio 
+   e passare la list ad un altro componente figlio.
+
+   ---> ---> SingleChildScrollView <--- <----         
+
+
+   ** con il package Uuid, possiamo generare uid per gli elmenti di una classe nel costruttore:
+   
+   Es:
+
+    import 'package:uuid/uuid.dart';
+
+    const uuid = Uuid();
+
+    class Expense {
+        Expense({
+          required this.title,
+          required this.amount,
+          required this.date
+        }) : id = uuid.v4();
+
+        final String id;
+        final String title;
+        final double amount;
+        final DateTime date;
+    }
+
+
+*********************************************************************************
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+------------------------------ MOLTO IMPORTANTI ---------------------------------
+
+SE CREIAMO UNA ListView DOBBIAMO DEFINIRALE DENTRO UN COMPONENTE CHE HA UN ALTEZZA
+
+ALTRIMENTI AVREMO QUESTO ERRORE:
+
+The following assertion was thrown during performResize():
+Vertical viewport was given unbounded height.
+
+_________________________________________________________________________________
+
+-----------> QUANDO CREIAMO UNO O PIù TextEditController, 
+                    DOBBIAMO GESTIRE IL DISPOSE DI TALI OGGETTI <-----------------
+
+
+*********************************************************************************
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+----------------------------------------------------------------
+
+----> Nello Scaffold possiamo definire una AppBar <-----
+
+
+********** FORM PER L'INSERIMENTO DI UN NUOVO ELEMENTO IN UNA LISTA ***********
+
+Quando dobbiamo gestire una lista di elementi in cui possiamo aggiungere, eliminare o cancellare elementi conviene farlo trami almeno 2 widget custom, un element LIST e uno ITEM (ovviamente è necesario un elmento che contiene l'elemento LIST).
+L'inserimento di un nuovo elemento nella lista può avvenire tramite una dialog, ne esistono di diversi tipi e una di queste è showModalBottomSheet in cui la dialog spunta fuori dal basso.
+Nel form i campi possono essere validati, o con una funzione specifica oppure invece di usare il campo TextField si può usare il campo TextFormField che contiene la proprietà "validation."
+Tra la catena ELEMENTO CONTENITORE -> ELEMENTO LISTA -> ELEMENTI ITEM è possibile definire delle funzioni da passare ai widjet figli (es: aggiungere un elmento alla lista o eliminare un elemento).
+Per eliminare un elemento invece di mettere il pulsante con l'icona del cestino, possiamo abilitare lo swipe che cancella l'elemento. Dopo l'elemento mostriamo uno snackBar per confermare l'eleminazione e diamo anche la possibilità di cancellare l'operazione
+
+Es:  
+void _handleRemoveExpenses(Expense expense){
+    int indexExpense = _registerExpense.indexOf(expense);
+
+    setState(() {
+      _registerExpense.remove(expense);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text("Expense deleted"),
+          duration: Duration(seconds: 2),
+          action: SnackBarAction(label: "Undo", onPressed: (){
+            setState(() {
+              _registerExpense.insert(indexExpense, expense);
+            });
+          }),
+      )
+    );
+  }

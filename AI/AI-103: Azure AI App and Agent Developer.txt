@@ -63,4 +63,60 @@ SECTION 1
     QUANDO USARE QUALE: SDK è un più facile da usare, le chiamate REST ci danno più controllo e si possono usare con ogni linguaggio di programmazione
 
     UNIT 2
-    
+    MICROSOFT FOUNDRY è un singolo servizio di Azure che provvede al deploy dei modelli, hosting per agenti, sicureza e tool di debug.
+
+    FOUNDRY HUBS: è un container di altro vicello che racchiude tutti i progetti agentici, modelli e impostazioni di sucurezza.
+        Definizione: Un HUB è come una cartella che contiene qualsiasi cosa relaziona al tuoi teams di lavoro AI 
+        -> Hub vs Azure Subscription: Una sottoscrizione Azure può avere moltipli Hub e ogni Hub può avere le proprie regole d'accesso, cost di tracciamento e collocazione regionale
+        --> Quando crere un Hub ? un hub va creato per business unit. Hub isola agents, modelli e costi da altri gruppi nella stessa azienda
+
+    FOUNDRY Projects: E' un workspace interno di un HUB dove si possono creare, restare e deployare agenti specifici o gruppi di agenti relazionati
+        Definizione: Un progetto (Projects) contiene qualsiasic cosa per un "agent soluction": il codice dell'agente, system message, definizione  di tool, configurazione della memoria e trace log.
+        -> Projet vs. Hub Relationshio: Un HUB può contenre diversi progetti e ogni progetto eredita le impostazioni di sicurezza dal suo HUB ma può avere anche la propria specifica configurazione.
+        --> Un Projet potrebbe contenere un customer support agent. Un altro progetto nello stesso Hub potrebbe contenere un separato catologo gi gestione degli agenti.
+
+    FOUNDRY Agent Service: è un ambiente di runtime dove deployare agenti, eseguirli e rispondere alle richieste utenti
+        Definizione: Un Agent Service è una piattaforma di hosting completamente dedicata alla gestione. Si può uploadare il codice degli agenti, eseguirci servizi, scalarli e monitorarne la vita.
+
+    FOUNDRY Model Catalog: è una lista di modelli AI pre allenati che si possono deployare e usare come cervelli dei nostri agenti 
+        Definizione: The model Catalog mostra tutti i modelli disponiile da MICROSOFT (Phi series), OpenAI (GPT-5) e altri provider.    
+ 
+     WHAT IS AN EndPoint ? 
+        Definizione: Quando si deploya un modello o un agente, Foundry da un URL con il quale raggiungere il nostro codice applicativo.
+        -> Senza un URL, la nostra applicazione non avrebbe una modo come raggiungere il modello deployaiato o l'agente.
+        --> Ogni EndPoint ha associato un API Key che provvede ad autorizzare le chiamate verso l'end point 
+
+    API KEYS: è una stringa segreta di caratteri che identifica la nostra applicazione e provvede a darle i permessi necessari per invocare un EndPoint.
+        Definizione: Un API KEY è come una password per il nostro codice, deve essere incluso in ogni richiesta verso l'EndPoint
+        --> Una buona best practice sarebbe quella di cambiare l'API KEY regolarmente.
+
+     --------> RIASSUNTO FOUNDRY Projects GERARCHIA <-----------
+
+    LIVELLO 1: Azure Subscription, il Top Container. Una Subscription contiene multiplu HUBS
+    LIVELLO 2: FOUNDRY Hub, contiene Projects, modelli condivisi e policies di sicurezza condivise 
+    LIVELLO 3: FOUNDRY Projects: Contiene codice degli agenti, tool definitions, impostazione di memoria e trace logs.
+    LIVELLO 4: Agent Service Deployment: L'istanza in esecuzione del proprio agente. Gli agenti sono deployati da un Projet e ognuno ha il proprio URL and API KEYS.
+
+    ------------------------------------------------------------
+
+    Agent Identity Bluprints: è un template che definisce permessi e regole di accessi che un agente dovrebbe avere quando è deployaiato.
+        Definizione: Un Blueprint è un file di  configurazione riusaibile che specifica quale database, APIs, e storage un agente può avere accesso.
+        - > Quando usare un Blueprint ? Invece di configurare i permessi di ogni singolo agente, possiamo creare un Blueprint e usarlo per tutti.
+        Blueprint vs. Agent ID: sono due concetti diversi, l'Agent ID è un'identità unica mentre Blueprint è un template di permesse applicati ad un'identità.
+
+    Conditional Access for Agents: è una feature di sicurezza che verifica delle condizioni, come localiccazione per esempio, prima di permette ad un agente di agire.
+        -> Per esempio possiamo richiedere ad un agente di essere eseguito dalle 9 AM e le 5 PM, prima di esegure l'agente verifica l'orario.
+
+    Access Packages for Agents: pacchhetti di permessi che si possono assegnare all'identità degli agenti, hanno una data di scadenza.
+
+    **** SPONSOR LIFECYCLE ****
+        Abbiamo detto che uno sponsor è un umano che è responsabile delle azioni di un agente e deve approvare certi comportamenti.
+        -> Definizione: Ogni agente con un Entra Agent ID deve avere uno sponsor. Questa persona è responsabile se l'agente non ha un buon comportamento o viola le policies 
+        --> Responsibilità: Lo sponsor riceve i log dell'agente, approva le richieste di Access Packages e viene contattato se l'agente fa scattare un security alert.
+        ---> Lifecycle Management: Quando uno sponsor lascia l'azienda, l'agente assegnato viene sospeso fino a quando un nuovo.
+
+    *** CODING PATTERN ***
+    I nostri agenti devono recuperare EndPoint URL e API KEYS dalle configurazioni e queste non devono MAI ESSERE SCHIANTANTE NEL CODICE A MANINA.
+    --> Enviroment Variables Pattern: Salvare/Usare 'FOUNDRY_ENDPOINT' e 'FOUNDRY_API_KEY' come variabili d'ambiente. Il nostro codice le dovrà leggere come os.getent('FOUNDRY_ENDPOINT')
+    --> Azure Key Vault Pattern: Per produzione, salviamo le chiavi segrete in Key Vault. I nostri codici di autenticazione sono salvati prima in Key Vault e dopo recuperati per gli EndPoint e le chiavi di sicurezza.
+    --> DefaultAzureCredential Pattern: Usare 'DefaultAzureCredential()' nel codice, questo prova automaticamente multipli metodi di autenticazione come variabili d'ambiente, gestione dell'identità, Visual Studio pop up, etc.
